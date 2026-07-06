@@ -129,6 +129,31 @@
         </header>
 
         <div class="container">
+            
+            <section style="background-color: #fffaf0; border: 3px solid #ffb7b2; padding-top: 50px;">
+                <img src="S__377659494_0-removebg-preview.png" alt="星球小精靈" class="mascot" style="top: -50px; left: 10px; width: 110px; animation-delay: 1s;">
+                
+                <h2 style="text-align: center; color: #d63031; font-size: 2em; margin-bottom: 10px;">歡迎來到 伴玩星球 🪐</h2>
+                <p style="text-align: center; font-weight: bold; color: #555; font-size: 1.1em; padding: 0 15px;">
+                    我們是一個結合「幼教專業」與「AI 科技」的創新托育媒合平台。<br>
+                    為了給孩子最好的陪伴，並減輕父母的育兒負擔，我們致力於打造一個安全、豐富且便利的育兒生態圈！
+                </p>
+                
+                <h3 style="color: #e67e22; margin-top: 35px; border-bottom: 2px dashed #ffd3b6; padding-bottom: 8px; text-align: center;">💡 認識 伴玩星球 的四大核心特色</h3>
+                
+                <div id="about-container-front">
+                    載入資料中...
+                </div>
+
+                <p style="text-align: center; font-weight: bold; color: #e66a74; font-size: 1.2em; margin-top: 35px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    伴玩星球——從源頭解決您尋找陪玩、安排活動與申請補助的煩惱，<br>讓育兒生活更輕鬆美好！
+                </p>
+            </section>
+
+            <div class="search-container" style="margin-top: 40px;">
+                <input type="text" id="global-search" class="search-input" placeholder="🔍 找繪本、找教案？輸入關鍵字 (如: 3歲、情緒)..." onkeyup="handleSearch()">
+            </div>
+
             <section>
                 <h2>📝 我們的媒合與服務流程</h2>
                 <ol>
@@ -141,7 +166,7 @@
             <section>
                 <h2>🛡️ 為什麼需要簽署合約與填寫幼兒資訊？</h2>
                 <ul>
-                    <li><strong>落Solid政府規定：</strong> 我們的人員皆為臺中市合格登記的到宅托育人員，完整合約需回報給居托中心建檔備查，保障雙方安全。</li>
+                    <li><strong>落實政府規定：</strong> 我們的人員皆為臺中市合格登記的到宅托育人員，完整合約需回報給居托中心建檔備查，保障雙方安全。</li>
                     <li><strong>完善保險理賠：</strong> 我們的托育人員皆具備相關保險。合約上填寫幼兒資訊，是為了萬一發生意外狀況時，保險能夠順利理賠給幼兒。</li>
                     <li><strong>公開透明：</strong> 此份合約書內容為統一格式，您也可以隨時在「臺中市居家托育服務中心」的官方網站上查閱。</li>
                 </ul>
@@ -174,12 +199,7 @@
                 </div>
             </section>
 
-            <div class="search-container">
-                <input type="text" id="global-search" class="search-input" placeholder="🔍 找繪本、找教案？輸入關鍵字 (如: 3歲、情緒)..." onkeyup="handleSearch()">
-            </div>
-
-            <section style="background-color: #f1f8f6; border-color: #a8e6cf; margin-top: 0;">
-                <img src="S__377659494_0-removebg-preview.png" alt="星球小精靈" class="mascot" style="top: -40px; right: 20px; width: 90px; animation-delay: 1.5s;">
+            <section style="background-color: #f1f8f6; border-color: #a8e6cf;">
                 <h2 style="text-align: center; color: #2c3e50;">🎁 伴玩嚴選與情報站</h2>
                 <p style="text-align: center; color: #555;">精選優質繪本推薦，以及臺中市政府/親子好康情報，讓育兒生活更豐富！</p>
                 
@@ -303,6 +323,11 @@
             <input type="hidden" id="edit-id">
             <input type="hidden" id="edit-collection">
 
+            <div id="edit-about-inputs" style="display:none;">
+                <label style="font-size:14px; font-weight:bold; color:#6d4c41;">特色標題：</label><input type="text" id="edit-about-title" class="admin-input">
+                <label style="font-size:14px; font-weight:bold; color:#6d4c41;">特色內容：</label><textarea id="edit-about-content" class="admin-input" rows="4"></textarea>
+            </div>
+
             <div id="edit-faq-inputs" style="display:none;">
                 <label style="font-size:14px; font-weight:bold; color:#6d4c41;">問題：</label><input type="text" id="edit-faq-q" class="admin-input">
                 <label style="font-size:14px; font-weight:bold; color:#6d4c41;">回答：</label><textarea id="edit-faq-a" class="admin-input" rows="4"></textarea>
@@ -362,6 +387,16 @@
                 <h3 style="color:#d63031;">💌 管理家長留言</h3>
                 <p style="font-size: 14px; color: #666;">來自前台家長的真實回饋。若有不當發言，可直接於此刪除。</p>
                 <div id="admin-feedback-list">載入資料中...</div>
+            </div>
+
+            <div class="admin-card">
+                <h3 style="color:#e67e22;">✨ 管理品牌核心特色</h3>
+                <input type="text" id="new-about-title" class="admin-input" placeholder="特色標題 (例如：安全透明的媒合把關)">
+                <textarea id="new-about-content" class="admin-input" rows="3" placeholder="特色說明內容..."></textarea>
+                <button class="btn" style="background:#e67e22;" onclick="addAbout()">➕ 新增特色</button>
+                <hr style="margin:20px 0; border:0; border-top:2px dashed #eee;">
+                <h3>現有特色列表</h3>
+                <div id="admin-about-list">載入資料中...</div>
             </div>
 
             <div class="admin-card">
@@ -447,7 +482,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let faqs = [], resources = [], books = [], goodies = [], feedbacks = [];
+        let faqs = [], resources = [], books = [], goodies = [], feedbacks = [], abouts = [];
         let adminPassword = 'play25';
 
         // 讀取/初始化密碼設定
@@ -456,12 +491,23 @@
             else { db.collection("config").doc("admin_settings").set({ password: 'play25' }); }
         });
 
+        // 🌟 自動初始化「關於我們」四大特色 (如果資料庫是空的)
+        const defaultAbouts = [
+            { title: "🛡️ 安全透明的媒合把關", content: "告別傳統陪玩市場的灰色地帶！我們以幼教實務經驗為基礎，建立嚴謹、標準化的媒合流程，嚴格把關伴玩人員素質，為您提供最安心、有保障的托育選擇。", timestamp: 1 },
+            { title: "🎨 原創專屬的教案與音樂", content: "陪玩，不只是看顧！我們獨家開發高品質的原創教案與歌曲，讓伴玩過程充滿教育意義與啟發性。這些資源也開放給家長使用，讓您在閒暇之餘能輕鬆陪伴孩子，增進親子關係。", timestamp: 2 },
+            { title: "💡 育兒與補助資訊一站整合", content: "為忙碌的爸媽省下寶貴時間！我們將繁雜的政府托育政策、育兒津貼補助及最新法規動態進行一站式彙整，讓您不再需要四處爬文，輕鬆掌握自身權益。", timestamp: 3 },
+            { title: "🏆 屢獲大獎肯定的專業團隊", content: "我們不僅榮獲三創盃全國第三名，更成功入圍 2026 年全國創新創業競賽！伴玩星球積極運用 AI 科技優化服務體驗，以獲獎肯定的實力，打造最值得您信賴的家庭支援後盾。", timestamp: 4 }
+        ];
+        db.collection("abouts").get().then(snap => {
+            if (snap.empty) { defaultAbouts.forEach(a => db.collection("abouts").add(a)); }
+        });
+
         // 監聽資料庫
+        db.collection("abouts").onSnapshot(snap => { abouts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
         db.collection("faqs").onSnapshot(snap => { faqs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
         db.collection("resources").onSnapshot(snap => { resources = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
         db.collection("books").onSnapshot(snap => { books = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp); renderFront(); renderAdmin(); });
         db.collection("goodies").onSnapshot(snap => { goodies = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp); renderFront(); renderAdmin(); });
-        // ⭐ 監聽留言板資料
         db.collection("feedbacks").onSnapshot(snap => { feedbacks = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp); renderFront(); renderAdmin(); });
 
         function showLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
@@ -518,10 +564,14 @@
         function safeStr(str) { return (str || '').toLowerCase(); }
 
         function renderFront(keyword = '') {
+            const fAbouts = abouts.filter(a => (safeStr(a.title) + safeStr(a.content)).includes(keyword));
             const fFaqs = faqs.filter(f => (safeStr(f.q) + safeStr(f.a)).includes(keyword));
             const fRes = resources.filter(r => (safeStr(r.name) + safeStr(r.type) + safeStr(r.copyright)).includes(keyword));
             const fBooks = books.filter(b => (safeStr(b.title) + safeStr(b.age) + safeStr(b.category) + safeStr(b.outline) + safeStr(b.author) + safeStr(b.publisher)).includes(keyword));
             const fGoodies = goodies.filter(g => (safeStr(g.title) + safeStr(g.content)).includes(keyword));
+
+            // ⭐ 渲染關於我們
+            document.getElementById('about-container-front').innerHTML = fAbouts.length ? fAbouts.map(a => `<button class="accordion" style="background-color: #fff; border-color: #ffd3b6;">${a.title}</button><div class="panel" style="border-color: #ffd3b6;"><div class="panel-inner"><p>${a.content}</p></div></div>`).join('') : '<p style="text-align:center; color:#888;">找不到相關特色</p>';
 
             document.getElementById('faq-container-front').innerHTML = fFaqs.length ? fFaqs.map(f => `<button class="accordion">${f.q}</button><div class="panel"><div class="panel-inner"><p>${f.a}</p></div></div>`).join('') : '<p style="color:#888;">找不到相關問題</p>';
             
@@ -574,7 +624,6 @@
                 `).join('');
             }
 
-            // ⭐ 渲染留言板 ⭐
             const fbContainer = document.getElementById('feedback-container-front');
             if(feedbacks.length === 0) {
                 fbContainer.innerHTML = '<p style="text-align:center; color:#888;">目前還沒有留言，來搶頭香吧！</p>';
@@ -592,7 +641,8 @@
 
         // ================= 後台列表渲染 =================
         function renderAdmin() {
-            // ⭐ 渲染後台留言板管理 ⭐
+            document.getElementById('admin-about-list').innerHTML = abouts.map(a => `<div class="admin-list-item"><div><strong>${a.title}</strong></div><div class="action-buttons"><button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditAbout('${a.id}')">編輯</button><button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('abouts','${a.id}')">刪除</button></div></div>`).join('');
+            
             document.getElementById('admin-feedback-list').innerHTML = feedbacks.length ? feedbacks.map(fb => `
                 <div class="admin-list-item">
                     <div>
@@ -631,7 +681,12 @@
         }
 
         // ================= 新增資料邏輯 =================
-        // ⭐ 前台新增留言邏輯 ⭐
+        function addAbout() {
+            const title = document.getElementById('new-about-title').value, content = document.getElementById('new-about-content').value;
+            if(!title || !content) return alert('請填寫完整特色標題與內容！');
+            db.collection("abouts").add({ title, content, timestamp: Date.now() }).then(() => { document.getElementById('new-about-title').value = ''; document.getElementById('new-about-content').value = ''; });
+        }
+
         function addFeedback() {
             const name = document.getElementById('fb-name').value || '匿名家長';
             const age = document.getElementById('fb-age').value || '未填寫';
@@ -678,17 +733,26 @@
                 category: document.getElementById('new-book-category').value, outline: document.getElementById('new-book-outline').value,
                 timestamp: Date.now()
             }).then(() => {
-                document.querySelectorAll('#admin-view .admin-card:nth-child(2) .admin-input').forEach(el => el.value = '');
+                document.querySelectorAll('#admin-view .admin-card:nth-child(3) .admin-input').forEach(el => el.value = '');
                 alert('繪本新增成功！');
             });
         }
 
         // ================= 編輯與刪除 =================
         function hideAllEditInputs() {
+            document.getElementById('edit-about-inputs').style.display = 'none';
             document.getElementById('edit-faq-inputs').style.display = 'none';
             document.getElementById('edit-res-inputs').style.display = 'none';
             document.getElementById('edit-goodie-inputs').style.display = 'none';
             document.getElementById('edit-book-inputs').style.display = 'none';
+        }
+
+        function openEditAbout(id) {
+            hideAllEditInputs();
+            const a = abouts.find(x => x.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'abouts';
+            document.getElementById('edit-about-title').value = a.title; document.getElementById('edit-about-content').value = a.content;
+            document.getElementById('edit-about-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
         }
 
         function openEditFaq(id) {
@@ -733,7 +797,9 @@
             const collection = document.getElementById('edit-collection').value;
             let data = {};
             
-            if (collection === 'faqs') {
+            if (collection === 'abouts') {
+                data = { title: document.getElementById('edit-about-title').value, content: document.getElementById('edit-about-content').value };
+            } else if (collection === 'faqs') {
                 data = { q: document.getElementById('edit-faq-q').value, a: document.getElementById('edit-faq-a').value };
             } else if (collection === 'resources') {
                 data = { type: document.getElementById('edit-res-type').value, name: document.getElementById('edit-res-name').value, link: document.getElementById('edit-res-link').value, copyright: document.getElementById('edit-res-copyright').value };
