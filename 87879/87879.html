@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="google-site-verification" content="xouNMH0DBYYPa0xpXeOzk6EiNjtPRgItG8uOGKVaBOI" />
+    
     <title>伴玩星球 - 專業臨托與伴玩媒合</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -570,7 +573,6 @@
             const fBooks = books.filter(b => (safeStr(b.title) + safeStr(b.age) + safeStr(b.category) + safeStr(b.outline) + safeStr(b.author) + safeStr(b.publisher)).includes(keyword));
             const fGoodies = goodies.filter(g => (safeStr(g.title) + safeStr(g.content)).includes(keyword));
 
-            // ⭐ 渲染關於我們
             document.getElementById('about-container-front').innerHTML = fAbouts.length ? fAbouts.map(a => `<button class="accordion" style="background-color: #fff; border-color: #ffd3b6;">${a.title}</button><div class="panel" style="border-color: #ffd3b6;"><div class="panel-inner"><p>${a.content}</p></div></div>`).join('') : '<p style="text-align:center; color:#888;">找不到相關特色</p>';
 
             document.getElementById('faq-container-front').innerHTML = fFaqs.length ? fFaqs.map(f => `<button class="accordion">${f.q}</button><div class="panel"><div class="panel-inner"><p>${f.a}</p></div></div>`).join('') : '<p style="color:#888;">找不到相關問題</p>';
@@ -639,7 +641,6 @@
             setTimeout(() => initAccordion(keyword.length > 0), 100);
         }
 
-        // ================= 後台列表渲染 =================
         function renderAdmin() {
             document.getElementById('admin-about-list').innerHTML = abouts.map(a => `<div class="admin-list-item"><div><strong>${a.title}</strong></div><div class="action-buttons"><button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditAbout('${a.id}')">編輯</button><button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('abouts','${a.id}')">刪除</button></div></div>`).join('');
             
@@ -680,7 +681,6 @@
             `).join('');
         }
 
-        // ================= 新增資料邏輯 =================
         function addAbout() {
             const title = document.getElementById('new-about-title').value, content = document.getElementById('new-about-content').value;
             if(!title || !content) return alert('請填寫完整特色標題與內容！');
@@ -738,7 +738,6 @@
             });
         }
 
-        // ================= 編輯與刪除 =================
         function hideAllEditInputs() {
             document.getElementById('edit-about-inputs').style.display = 'none';
             document.getElementById('edit-faq-inputs').style.display = 'none';
@@ -817,4 +816,4 @@
         }
     </script>
 </body>
-</html>
+</html>這個放哪1. 複製下方的中繼標記，並貼到網站首頁的 <head> 區段中 (位於第一個 <body> 區段前)。<meta name="google-site-verification" content="xouNMH0DBYYPa0xpXeOzk6EiNjtPRgItG8uOGKVaBOI" />
