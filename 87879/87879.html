@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伴玩星球 - 專業臨托與伴玩媒合</title>
+    
+    <!-- 🌟 導入活潑可愛的圓體與黑體 -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <style>
+        /* 🌟 活潑的基礎設定與品牌色彩 (字體改為圓體與黑體組合) */
+        body { font-family: 'M PLUS Rounded 1c', 'Noto Sans TC', '微軟正黑體', 'Microsoft JhengHei', sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #4a4a4a; background-color: #fffaf0; background-image: radial-gradient(#ffeaa7 1px, transparent 1px); background-size: 20px 20px; }
+        .container { max-width: 1000px; margin: auto; padding: 20px; }
+        h1, h2, h3 { color: #6d4c41; }
+        
+        /* 🌟 導覽與主視覺 */
+        header { background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%); padding: 50px 20px; text-align: center; border-bottom: 5px solid #ffb7b2; position: relative; overflow: hidden; }
+        header img.logo { width: 160px; height: 160px; object-fit: contain; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 4px solid #ffb7b2; margin-bottom: 10px;}
+        header h1 { font-size: 2.8em; margin: 0; color: #ff8b94; text-shadow: 2px 2px 0px #fff; }
+        header p { font-size: 1.2em; font-weight: bold; color: #555; }
+        
+        /* 區塊共用 */
+        section { background: white; margin: 30px 0; padding: 40px 30px; border-radius: 20px; box-shadow: 0 8px 20px rgba(255, 183, 178, 0.2); position: relative; border: 2px solid #fff3e0;}
+        
+        /* 🌟 吉祥物漂浮動畫 */
+        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-12px) rotate(3deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+        .mascot { position: absolute; width: 100px; animation: float 3s ease-in-out infinite; z-index: 10; filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.1)); }
+        
+        /* 🌟 比較表格設計 */
+        .table-responsive { overflow-x: auto; margin-top: 20px; }
+        .comparison-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 2px solid #ffb7b2; border-radius: 15px; font-size: 16px; min-width: 700px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+        .comparison-table th, .comparison-table td { padding: 18px 15px; text-align: left; border-bottom: 1px solid #ffd3b6; border-right: 1px solid #ffd3b6; }
+        .comparison-table th:last-child, .comparison-table td:last-child { border-right: none; }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table th { font-weight: bold; text-align: center; font-size: 1.1em; }
+        .comparison-table th:nth-child(1) { background-color: #ffd3b6; color: #6d4c41; width: 15%; border-top-left-radius: 12px; }
+        .comparison-table th:nth-child(2) { background-color: #a8e6cf; color: #2c3e50; width: 42.5%; }
+        .comparison-table th:nth-child(3) { background-color: #ffb7b2; color: white; width: 42.5%; border-top-right-radius: 12px; }
+        .comparison-table td:nth-child(1) { font-weight: bold; color: #6d4c41; background-color: #fffaf0; text-align: center; }
+        .comparison-table td:nth-child(2) { background-color: #f1f8f6; color: #2c3e50; }
+        .comparison-table td:nth-child(3) { background-color: #fff0f0; color: #7f8c8d; }
+        .comparison-table td strong { display: block; margin-bottom: 5px; font-size: 1.05em; }
+        
+        /* 🌟 搜尋列設計 */
+        .search-container { text-align: center; margin-bottom: 30px; position: relative; z-index: 20; }
+        .search-input { width: 90%; max-width: 600px; padding: 15px 25px; font-size: 18px; border: 3px solid #ffb7b2; border-radius: 50px; outline: none; box-shadow: 0 4px 10px rgba(255, 183, 178, 0.3); transition: 0.3s; color: #2c3e50; font-weight: bold; }
+        .search-input:focus { border-color: #ff8b94; box-shadow: 0 6px 15px rgba(255, 139, 148, 0.4); transform: translateY(-2px); }
+        .search-input::placeholder { color: #b2bec3; font-weight: normal; }
+
+        /* 🌟 繪本與其他卡片設計 */
+        .book-card { display: flex; flex-wrap: wrap; gap: 20px; background: #fffaf0; }
+        .book-img { flex: 0 0 130px; height: 180px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; background: #fff; }
+        .book-info { flex: 1; min-width: 250px; }
+        .book-meta { font-size: 14px; color: #666; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 10px;}
+        .book-meta span { background: #fff; padding: 2px 8px; border-radius: 5px; border: 1px solid #eee; }
+        .book-outline { font-size: 14px; color: #4a4a4a; background: white; padding: 10px; border-radius: 8px; border-left: 4px solid #ffb7b2; }
+
+        .goodie-content { font-size: 15px; color: #555; white-space: pre-wrap; line-height: 1.8;}
+        .goodie-link { display: inline-block; margin-top: 8px; font-size: 14px; color: white; background: #a8e6cf; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-weight: bold; box-shadow: 0 3px 0px #85d5b7;}
+        .goodie-link:hover { background: #85d5b7; transform: translateY(2px); box-shadow: 0 1px 0px #85d5b7;}
+
+        .feedback-card { background: white; padding: 15px; border-radius: 15px; border-left: 5px solid #ffb7b2; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .feedback-header { font-weight: bold; color: #2c3e50; margin-bottom: 5px; font-size: 15px; }
+        .feedback-text { color: #555; font-size: 15px; white-space: pre-wrap; }
+
+        /* 按鈕與共用設計 */
+        .btn { display: inline-block; padding: 12px 25px; margin: 10px 5px; background-color: #ffb7b2; color: white; text-decoration: none; border-radius: 50px; font-weight: bold; transition: 0.3s; cursor: pointer; border: none; font-size: 16px; box-shadow: 0 4px 0px #ff9e99;}
+        .btn:hover { background-color: #ff9e99; transform: translateY(2px); box-shadow: 0 2px 0px #ff9e99;}
+        .btn-danger { background-color: #ff8b94; box-shadow: 0 4px 0px #e66a74; }
+        .btn-danger:hover { background-color: #e66a74; box-shadow: 0 2px 0px #e66a74; }
+        .btn-edit { background-color: #a8e6cf; color: #2c3e50; box-shadow: 0 4px 0px #85d5b7; }
+        .btn-edit:hover { background-color: #85d5b7; box-shadow: 0 2px 0px #85d5b7; }
+        
+        .accordion { background-color: #f1f8f6; color: #4a4a4a; cursor: pointer; padding: 18px; width: 100%; border: 2px solid #a8e6cf; text-align: left; outline: none; font-size: 16px; font-weight: bold; transition: 0.4s; border-radius: 15px; margin-top: 15px; }
+        .active, .accordion:hover { background-color: #dcedc1; }
+        .panel { padding: 0 15px; background-color: white; max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; margin-bottom: 10px; border-left: 4px solid #a8e6cf; border-radius: 0 0 15px 15px;}
+        .panel-inner { padding: 15px 0; }
+        
+        .resource-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .resource-card { border: 2px dashed #ffb7b2; border-radius: 15px; background: #fff; transition: 0.3s; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .resource-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255,139,148,0.2); border-style: solid;}
+        .resource-title { font-weight: bold; color: #2c3e50; font-size: 16px; margin: 0; }
+        .resource-copyright { font-size: 13px; color: #95a5a6; margin-top: 5px; }
+        .resource-link { padding: 8px 20px; background: #a8e6cf; color: #4a4a4a; text-decoration: none; border-radius: 50px; font-size: 14px; font-weight: bold; transition: 0.3s; box-shadow: 0 3px 0px #85d5b7; white-space: nowrap;}
+        .resource-link:hover { background: #85d5b7; transform: translateY(2px); box-shadow: 0 1px 0px #85d5b7;}
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .card { background: #fffaf0; padding: 20px; border-radius: 15px; border-left: 5px solid #ffd3b6; box-shadow: 0 4px 6px rgba(0,0,0,0.03);}
+        .card p { margin-top: 10px; font-size: 15px; line-height: 1.8; color: #555; }
+        .card strong { color: #6d4c41; }
+        
+        footer { background: #5d4a46; color: #fffaf0; text-align: center; padding: 40px 20px; margin-top: 50px; border-top: 6px solid #ff8b94;}
+        footer h2 { color: #fffaf0; }
+        footer a { color: #ffb7b2; text-decoration: none; font-weight: bold;}
+        footer a:hover { text-decoration: underline; color: #ffd3b6;}
+
+        /* 後台管理介面 */
+        #admin-view { display: none; background-color: #f4f6f7; min-height: 100vh; padding-bottom: 50px;}
+        .admin-header { background: #6d4c41; color: white; padding: 20px; text-align: center; position: relative;}
+        .logout-btn { position: absolute; right: 20px; top: 20px; background: #ff8b94; color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer;}
+        
+        /* 🌟 後台分頁導航設計 */
+        .admin-nav { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap;}
+        .admin-tab-btn { background: #e0e0e0; color: #555; padding: 12px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; font-size: 16px; box-shadow: 0 3px 0px #ccc;}
+        .admin-tab-btn:hover { transform: translateY(2px); box-shadow: 0 1px 0px #ccc; }
+        .admin-tab-btn.active { background: #27ae60; color: white; box-shadow: 0 3px 0px #1e8449; }
+
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
+
+        .admin-card { background: white; padding: 20px; margin: 20px auto; max-width: 900px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
+        .admin-input { width: 100%; padding: 12px; margin: 10px 0; box-sizing: border-box; border: 2px solid #eee; border-radius: 10px; font-size: 15px;}
+        .admin-list-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #ddd; padding: 15px 0;}
+        .action-buttons { display: flex; gap: 8px; flex-shrink: 0; }
+        
+        /* 彈窗與表單設計 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(93, 74, 70, 0.8); z-index: 1000; justify-content: center; align-items: center;}
+        .modal-box { background: white; padding: 40px 30px; border-radius: 20px; width: 90%; max-width: 650px; border: 4px solid #ffb7b2; box-sizing: border-box; max-height: 90vh; overflow-y: auto;}
+
+        /* 需求單表單樣式 */
+        .req-label { display: block; font-weight: bold; color: #6d4c41; margin-top: 15px; font-size: 15px; }
+        .req-label span { color: #d63031; } /* 必填星號 */
+        .req-section-title { color: #e67e22; border-bottom: 2px dashed #ffd3b6; padding-bottom: 5px; margin-top: 25px; margin-bottom: 10px; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+        .checkbox-group label { background: #f1f8f6; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; border: 1px solid #a8e6cf; transition: 0.3s; }
+        .checkbox-group label:hover { background: #dcedc1; }
+        .checkbox-group input { margin-right: 5px; }
+        .cost-display { background: #fff3e0; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: bold; color: #d35400; border: 2px dashed #f39c12; margin-top: 10px; }
+
+        /* 🌟 伴玩人員履歷展示卡片 */
+        .playmate-card { background: #f9fbfd; border: 2px solid #a8e6cf; border-radius: 15px; padding: 20px; margin-top: 15px; font-size: 15px; line-height: 1.8; color: #2c3e50;}
+        .playmate-card h4 { margin-top: 0; color: #27ae60; border-bottom: 2px dashed #a8e6cf; padding-bottom: 10px; margin-bottom: 15px; text-align: center; font-size: 18px;}
+        .playmate-card .pm-row { display: flex; flex-wrap: wrap; margin-bottom: 8px; }
+        .playmate-card .pm-label { font-weight: bold; width: 100px; color: #6d4c41; flex-shrink: 0;}
+        .playmate-card .pm-value { flex: 1; min-width: 200px; }
+
+        /* 🌟 LINE 預約浮動按鈕 */
+        .line-float-btn { position: fixed; bottom: 30px; right: 30px; background: #00B900; color: white; padding: 15px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 999; font-size: 18px; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: 2px solid white; }
+        .line-float-btn:hover { background: #009900; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); color: white;}
+    </style>
+</head>
+<body>
+
+    <a href="https://lin.ee/VxdBG04" target="_blank" class="line-float-btn">
+        💬 填寫完需求單請一定要到官方LINE
+    </a>
+
+    <!-- ================= 前台畫面 ================= -->
+    <div id="front-view">
+        <header>
+            <button id="user-auth-btn" class="btn btn-edit" style="position: absolute; top: 20px; right: 20px; z-index: 50;" onclick="showUserLogin()">家長登入 / 註冊</button>
+
+            <img src="S__377675789.jpg" alt="伴玩星球 Logo" class="logo">
+            <h1>🪐 伴玩星球</h1>
+            <p>專業、合法、安心的臨托與伴玩媒合服務</p>
+            <img src="S__377659492_0-removebg-preview.png" alt="小精靈" class="mascot" style="bottom: -20px; right: 5%; animation-delay: 0.5s;">
+        </header>
+
+        <div class="container">
+            
+            <section style="background-color: #fffaf0; border: 3px solid #ffb7b2; padding-top: 50px;">
+                <img src="S__377659494_0-removebg-preview.png" alt="星球小精靈" class="mascot" style="top: -50px; left: 10px; width: 110px; animation-delay: 1s;">
+                
+                <h2 style="text-align: center; color: #d63031; font-size: 2em; margin-bottom: 10px;">歡迎來到 伴玩星球 🪐</h2>
+                <p style="text-align: center; font-weight: bold; color: #555; font-size: 1.1em; padding: 0 15px;">
+                    我們是一個結合「幼教專業」與「AI 科技」的創新托育媒合平台。<br>
+                    為了給孩子最好的陪伴，並減輕父母的育兒負擔，我們致力於打造一個安全、豐富且便利的育兒生態圈！<br>
+                    <span style="color:#00B900;">★ 若有臨托或伴玩預約需求，請先註冊/登入家長會員填寫需求單！</span>
+                </p>
+                
+                <h3 style="color: #e67e22; margin-top: 35px; border-bottom: 2px dashed #ffd3b6; padding-bottom: 8px; text-align: center;">💡 認識 伴玩星球 的四大核心特色</h3>
+                
+                <div id="about-container-front">
+                    載入資料中...
+                </div>
+            </section>
+
+            <div class="search-container" style="margin-top: 40px;">
+                <input type="text" id="global-search" class="search-input" placeholder="🔍 找繪本、找教案？輸入關鍵字 (如: 3歲、情緒)..." onkeyup="handleSearch()">
+            </div>
+
+            <section>
+                <h2>📝 我們的媒合與服務流程</h2>
+                <ol>
+                    <li><strong>需求媒合：</strong>請先於網站登入並填寫「托育需求單」，送出後至 <a href="https://lin.ee/VxdBG04" target="_blank" style="color:#00B900; font-weight:bold;">官方 LINE</a> 與我們聯絡，我們將依據需求尋找最合適的伴玩人員。</li>
+                    <li><strong>資格確認：</strong>媒合成功後，我們會將該名人員的「托育人員登記證」傳給您確認，確保人員專業資格。</li>
+                    <li><strong>簽署合約：</strong>陪玩服務當天，伴玩人員會帶著「臺中市居家托育服務中心」規定的合約，與您現場簽署。</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>🛡️ 為什麼需要簽署合約與填寫幼兒資訊？</h2>
+                <ul>
+                    <li><strong>落實政府規定：</strong> 我們的人員皆為臺中市合格登記的到宅托育人員，完整合約需回報給居托中心建檔備查，保障雙方安全。</li>
+                    <li><strong>完善保險理賠：</strong> 我們的托育人員皆具備相關保險。合約上填寫幼兒資訊，是為了萬一發生意外狀況時，保險能夠順利理賠給幼兒。</li>
+                    <li><strong>公開透明：</strong> 此份合約書內容為統一格式，您也可以隨時在「臺中市居家托育服務中心」的官方網站上查閱。</li>
+                </ul>
+                <div id="contract-links-container-front" style="text-align: center; margin-top: 25px;">
+                    載入資料中...
+                </div>
+            </section>
+
+            <section style="background-color: #ffffff; border: 2px solid #ffd3b6;">
+                <h2 style="text-align: center; color: #6d4c41; margin-bottom: 5px;">為什麼一定要找「有登記證」的托育人員？</h2>
+                <p style="text-align: center; font-weight: bold; color: #ff8b94; font-size: 1.15em; margin-top: 0;">多項指標超級比一比，家長安心不踩雷！</p>
+                <div class="table-responsive">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>檢核指標</th>
+                                <th>✅ 取得「居家托育登記證」<br><span style="font-size:0.85em; font-weight:normal; color:#2c3e50;">(合法把關)</span></th>
+                                <th>❓ 未取得登記<br><span style="font-size:0.85em; font-weight:normal; color:#fff;">(陪玩市場的灰色地帶)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-container-front">
+                            <tr><td colspan="3" style="text-align: center; color: #888;">載入資料中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section style="background-color: #f1f8f6; border-color: #a8e6cf;">
+                <h2 style="text-align: center; color: #2c3e50;">🎁 伴玩嚴選與情報站</h2>
+                <button class="accordion" style="background-color: #ffb7b2; color: white; border-color: #ff9e99; margin-top: 25px;">📚 點我展開：嚴選繪本推薦</button>
+                <div class="panel" style="border-color: #ff9e99; background-color: #fffaf0;">
+                    <div class="panel-inner" id="books-container-front">載入資料中...</div>
+                </div>
+
+                <button class="accordion" style="background-color: #a8e6cf; color: #2c3e50; border-color: #85d5b7; margin-top: 25px;">📢 點我展開：臺中育兒好康情報</button>
+                <div class="panel" style="border-color: #85d5b7; background-color: #fffaf0;">
+                    <div class="panel-inner" id="goodies-container-front">載入資料中...</div>
+                </div>
+            </section>
+
+            <section style="background-color: #fffaf0; border-color: #ffb7b2;">
+                <h2 style="text-align: center; color: #e66a74;">🌟 伴玩星球原創資源</h2>
+                <button class="accordion" style="background-color: #ffd3b6; border-color: #ffb7b2;">📂 點我展開：精選互動教案</button>
+                <div class="panel" style="border-color: #ffb7b2;"><div class="panel-inner resource-grid" id="lesson-container-front"></div></div>
+                <button class="accordion" style="background-color: #ffb7b2; color: white; border-color: #ff9e99;">🎵 點我展開：原創精選歌曲</button>
+                <div class="panel" style="border-color: #ff9e99;"><div class="panel-inner resource-grid" id="song-container-front"></div></div>
+            </section>
+            
+            <section>
+                <img src="S__377659493_0-removebg-preview.png" alt="愛心小精靈" class="mascot" style="top: -40px; left: 10px; width: 80px;">
+                <h2>💬 常見問題 Q&A</h2>
+                <div id="faq-container-front">載入資料中...</div>
+            </section>
+
+            <section style="background-color: #fffaf0; border-color: #ffd3b6;">
+                <h2 style="text-align: center; color: #6d4c41;">💌 家長回饋留言板</h2>
+                <p style="text-align: center; color: #555;">歡迎主動分享您的托育經驗或給我們的建議，您的真實回饋是我們進步的最大動力！</p>
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px dashed #ffb7b2; margin-bottom: 25px;">
+                    <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                        <input type="text" id="fb-name" class="admin-input" style="flex:1; border-color:#a8e6cf;" placeholder="您的暱稱 (不填則顯示匿名)">
+                        <input type="text" id="fb-age" class="admin-input" style="flex:1; border-color:#a8e6cf;" placeholder="寶貝年齡 (例如: 3歲)">
+                    </div>
+                    <textarea id="fb-content" class="admin-input" style="width: 100%; border-color:#a8e6cf;" rows="3" placeholder="寫下您的心得、鼓勵或建議..."></textarea>
+                    <div style="text-align: right; margin-top: 5px;">
+                        <button class="btn btn-danger" onclick="addFeedback()">送出公開留言 🚀</button>
+                    </div>
+                </div>
+                <div id="feedback-container-front" style="display: flex; flex-direction: column; gap: 15px;">
+                    載入留言中...
+                </div>
+            </section>
+
+            <section>
+                <h2>🏢 臺中市居家托育服務中心資訊</h2>
+                <p style="color:#555; font-weight:bold;">我們的人員皆依法向以下各區中心辦理登記，保障托育安全：</p>
+                <div class="grid">
+                    <div class="card"><h3 style="color:#d63031; margin-top:0;">第一區居家托育服務中心</h3><p><strong>承辦單位：</strong>財團法人彭婉如文教基金會<br><strong>電話：</strong>04-24724830</p></div>
+                    <div class="card"><h3 style="color:#e67e22; margin-top:0;">第二區居家托育服務中心</h3><p><strong>承辦單位：</strong>朝陽科技大學<br><strong>電話：</strong>04-24527828</p></div>
+                    <div class="card"><h3 style="color:#f1c40f; margin-top:0;">第三區居家托育服務中心</h3><p><strong>承辦單位：</strong>中臺科技大學<br><strong>電話：</strong>04-22338063</p></div>
+                    <div class="card"><h3 style="color:#27ae60; margin-top:0;">第四區居家托育服務中心</h3><p><strong>承辦單位：</strong>弘光科技大學<br><strong>電話：</strong>04-26368722</p></div>
+                    <div class="card"><h3 style="color:#2980b9; margin-top:0;">第五區居家托育服務中心</h3><p><strong>承辦單位：</strong>中臺科技大學<br><strong>電話：</strong>04-25226618</p></div>
+                    <div class="card"><h3 style="color:#8e44ad; margin-top:0;">第六區居家托育服務中心</h3><p><strong>承辦單位：</strong>財團法人亞洲大學<br><strong>電話：</strong>04-24820181</p></div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <h2>📞 聯絡我們</h2>
+            <p>LINE 官方預約與諮詢： <a href="https://lin.ee/VxdBG04" target="_blank" style="color:#00B900;">@563xerwv</a></p>
+            <p>Instagram： <a href="https://www.instagram.com/planet_play.25?igsh=MXJsbHljeWJyYjZqdA%3D%3D&utm_source=qr" target="_blank">planet_play.25</a></p>
+            <p>Facebook： <a href="https://www.facebook.com/share/1Dzt2eiRg3/?mibextid=wwXIfr" target="_blank">伴玩星球-到宅托育媒合服務</a></p>
+            <p>電子信箱： <a href="mailto:playplay2025428@gmail.com">playplay2025428@gmail.com</a></p>
+            <br>
+            <p style="font-size: 12px; color: #a59390;">&copy; 2025 伴玩星球股份有限公司 版權所有 <a href="#" onclick="showLoginModal()" style="color:#e0d6d5; cursor:pointer;">[管理員登入]</a></p>
+        </footer>
+    </div>
+
+    <!-- ================= 彈出視窗：家長登入/註冊 ================= -->
+    <div id="user-login-modal" class="modal-overlay">
+        <div class="modal-box" style="text-align: center;">
+            <h3 style="color:#2c3e50;" id="auth-title">家長登入</h3>
+            
+            <div id="dynamic-auth-form" style="text-align: left; margin-bottom: 15px;">
+            </div>
+
+            <button id="auth-submit-btn" class="btn btn-danger" onclick="handleAuthSubmit()">登入</button>
+            <button class="btn" style="background:#ddd; color:#555; box-shadow: 0 4px 0px #bbb;" onclick="closeModal('user-login-modal')">取消</button>
+            
+            <p style="margin-top: 15px; font-size: 14px;">
+                <a href="#" id="auth-toggle-link" onclick="toggleAuthMode()" style="color:#0984e3; text-decoration: none; font-weight:bold;">還沒有帳號？點此註冊</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= 彈出視窗：家長會員中心 ================= -->
+    <div id="member-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 800px; padding: 30px;">
+            <h2 style="color:#6d4c41; text-align:center; margin-top:0;">🪐 家長會員中心</h2>
+            
+            <!-- 🌟 家長會員中心 Tab 選單 -->
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
+                <button class="btn" style="background:#ffb7b2;" onclick="switchMemberTab('request')">📝 填寫需求單</button>
+                <button class="btn" style="background:#a8e6cf; color:#2c3e50;" onclick="switchMemberTab('appointments')">📅 進行中的預約</button>
+                <button class="btn" style="background:#ffd3b6; color:#6d4c41;" onclick="switchMemberTab('history')">📜 歷史紀錄與回饋</button>
+            </div>
+
+            <!-- Tab 1: 填寫需求單 -->
+            <div id="tab-request" class="member-tab">
+                <h3 style="color:#2c3e50; border-bottom:2px solid #a8e6cf; padding-bottom:10px;">📝 新增托育需求單</h3>
+                
+                <h4 class="req-section-title">第一部分：家長基本資料</h4>
+                <label class="req-label">1. 家長姓名：<span>*</span></label>
+                <input type="text" id="req-parent-name" class="admin-input" placeholder="請填寫您的真實姓名">
+                <label class="req-label">2. LINE 名稱：<span>*</span></label>
+                <input type="text" id="req-line-name" class="admin-input" placeholder="請填寫您的 LINE 顯示名稱以便核對">
+                <label class="req-label">3. 電子郵件：<span>*</span></label>
+                <input type="email" id="req-email" class="admin-input" placeholder="example@email.com">
+                <label class="req-label">4. 聯絡電話：<span>*</span></label>
+                <input type="tel" id="req-phone" class="admin-input" placeholder="09xx-xxx-xxx">
+                <label class="req-label">5. 您是孩子的（稱謂）：<span>*</span></label>
+                <select id="req-relation" class="admin-input">
+                    <option value="" disabled selected>請選擇您的身分</option>
+                    <option value="母親">母親</option>
+                    <option value="父親">父親</option>
+                    <option value="祖母">祖母</option>
+                    <option value="祖父">祖父</option>
+                    <option value="其他">其他</option>
+                </select>
+
+                <h4 class="req-section-title">第二部分：幼兒基本資料與托育需求</h4>
+                <label class="req-label">1. 幼兒姓名：<span>*</span></label>
+                <input type="text" id="req-child-name" class="admin-input" placeholder="請填寫幼兒真實姓名">
+                <label class="req-label">2. 幼兒性別：<span>*</span></label>
+                <div style="margin-top: 5px;">
+                    <label style="margin-right: 15px; cursor: pointer;"><input type="radio" name="req-gender" value="男寶" checked> 男寶</label>
+                    <label style="cursor: pointer;"><input type="radio" name="req-gender" value="女寶"> 女寶</label>
+                </div>
+                <label class="req-label">3. 幼兒年齡：<span>*</span></label>
+                <input type="text" id="req-child-age" class="admin-input" placeholder="例如：3歲5個月">
+                <label class="req-label">4. 幼兒平時的興趣、愛好：<span>*</span></label>
+                <textarea id="req-hobbies" class="admin-input" rows="2" placeholder="例如：喜歡玩積木、聽故事..."></textarea>
+                <label class="req-label">5. 幼兒平時作息、習慣：<span>*</span></label>
+                <textarea id="req-routine" class="admin-input" rows="2" placeholder="例如：下午1點到3點需要午睡..."></textarea>
+                <label class="req-label">6. 幼兒特別需求(病史)：<span>*</span> <span style="font-size: 13px; color:#888;">(可複選)</span></label>
+                <div class="checkbox-group" id="req-special-needs">
+                    <label><input type="checkbox" value="無特殊需求"> 無特殊需求</label>
+                    <label><input type="checkbox" value="早產"> 早產</label>
+                    <label><input type="checkbox" value="過敏體質"> 過敏體質</label>
+                    <label><input type="checkbox" value="身心障礙"> 身心障礙</label>
+                    <label><input type="checkbox" value="氣喘"> 氣喘</label>
+                    <label><input type="checkbox" value="心臟疾病"> 心臟疾病</label>
+                    <label><input type="checkbox" value="蠶豆症"> 蠶豆症</label>
+                    <label><input type="checkbox" value="疝氣"> 疝氣</label>
+                    <label><input type="checkbox" value="其他"> 其他</label>
+                </div>
+                <label class="req-label">7. 詳細地址（伴玩地點）：<span>*</span></label>
+                <input type="text" id="req-address" class="admin-input" placeholder="例如：台中市西屯區台灣大道Ｘ段Ｘ號">
+                <label class="req-label">8. 伴玩日期與時段：<span>*</span></label>
+                <textarea id="req-timeslot" class="admin-input" rows="2" placeholder="例：8/1 ～8/5 9:30-11:30 (可選範圍：8:00-20:00，每次至少2小時)"></textarea>
+                
+                <div style="background: #fdf5e6; padding: 15px; border-radius: 10px; border: 1px solid #ffd3b6; margin-top: 15px;">
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex:1;">
+                            <label class="req-label" style="margin-top:0;">9. 期望時薪 (元/時)：<span>*</span></label>
+                            <input type="number" id="req-budget" class="admin-input" placeholder="例如：300" oninput="calculateTotalCost()">
+                        </div>
+                        <div style="flex:1;">
+                            <label class="req-label" style="margin-top:0;">預計總時數 (小時)：<span>*</span></label>
+                            <input type="number" id="req-hours" class="admin-input" placeholder="例如：4" oninput="calculateTotalCost()">
+                        </div>
+                    </div>
+                    <div class="cost-display">
+                        💰 預計總托育費用：<span id="req-total-cost" style="font-size:24px; color:#c0392b;">0</span> 元
+                    </div>
+                </div>
+
+                <label class="req-label">10. 希望伴玩人員具有哪些專長? <span>*</span> <span style="font-size: 13px; color:#888;">(可複選)</span></label>
+                <div class="checkbox-group" id="req-skills">
+                    <label><input type="checkbox" value="繪本說演"> 繪本說演</label>
+                    <label><input type="checkbox" value="幼兒教玩具製作"> 幼兒教玩具製作</label>
+                    <label><input type="checkbox" value="幼兒韻律"> 幼兒韻律</label>
+                    <label><input type="checkbox" value="幼兒手指謠/童謠"> 幼兒手指謠/童謠</label>
+                    <label><input type="checkbox" value="美勞手作"> 美勞手作</label>
+                    <label><input type="checkbox" value="烹飪"> 烹飪</label>
+                    <label><input type="checkbox" value="幼兒英語"> 幼兒英語</label>
+                    <label><input type="checkbox" value="STEAM"> STEAM</label>
+                    <label><input type="checkbox" value="無特別需求"> 無特別需求</label>
+                    <label><input type="checkbox" value="其他"> 其他</label>
+                </div>
+                <label class="req-label">11. 其他須注意的特別事項：<span style="font-size: 13px; color:#888;">(非必填)</span></label>
+                <textarea id="req-notes" class="admin-input" rows="2" placeholder="是否有其他想告訴伴玩人員的事項..."></textarea>
+
+                <button class="btn btn-danger" style="width:100%; box-sizing:border-box; font-size:18px; margin-top:25px;" onclick="submitCareRequest()">🚀 填妥送出需求單</button>
+            </div>
+            
+            <!-- Tab 2: 進行中的預約 -->
+            <div id="tab-appointments" class="member-tab" style="display:none;">
+                <h3 style="color:#27ae60; border-bottom:2px solid #a8e6cf; padding-bottom:10px;">📅 進行中的預約</h3>
+                <div id="user-appointments-list">
+                    載入中...
+                </div>
+            </div>
+
+            <!-- 🌟 Tab 3: 歷史紀錄與回饋 -->
+            <div id="tab-history" class="member-tab" style="display:none;">
+                <h3 style="color:#8e44ad; border-bottom:2px solid #ffd3b6; padding-bottom:10px;">📜 歷史紀錄與回饋</h3>
+                <p style="font-size:14px; color:#666;">已完成或已取消的伴玩紀錄將會顯示於此。您可以在這裡填寫給我們的私密回饋，此回饋僅供後台人員檢視！</p>
+                <div id="user-history-list">
+                    載入中...
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; border-top: 2px dashed #eee; padding-top: 15px;">
+                <button class="btn" style="background:#ddd; color:#555; box-shadow: 0 4px 0px #bbb;" onclick="closeModal('member-modal')">關閉視窗</button>
+                <button class="btn btn-edit" onclick="userLogout()">登出帳號</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 彈出視窗：後台管理登入 ================= -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-box" style="text-align: center;">
+            <h3 style="color:#ff8b94;">後台管理登入</h3>
+            <input type="password" id="admin-pwd" class="admin-input" placeholder="請輸入管理員密碼">
+            <br><br>
+            <button class="btn btn-danger" onclick="verifyLogin()">登入</button>
+            <button class="btn" style="background:#ddd; color:#555; box-shadow: 0 4px 0px #bbb;" onclick="closeModal('login-modal')">取消</button>
+        </div>
+    </div>
+
+    <!-- ================= 後台管理介面 ================= -->
+    <div id="admin-view">
+        <div class="admin-header">
+            <h2>⚙️ 伴玩星球 - 後台管理系統</h2>
+            <button class="logout-btn" onclick="logoutAdmin()">登出回前台</button>
+        </div>
+        
+        <div class="admin-nav">
+            <button class="admin-tab-btn active" onclick="switchAdminTab('requests')">📝 托育需求單管理</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('content')">🖥️ 平台內容管理</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('settings')">⚙️ 系統設定</button>
+        </div>
+
+        <div class="container" style="max-width: 1100px;">
+            
+            <div id="admin-tab-requests" class="admin-tab-content active">
+                <div class="admin-card" style="border-left: 5px solid #27ae60; border-top: 4px solid #27ae60;">
+                    <h3 style="color:#27ae60;">📝 托育需求單管理</h3>
+                    <p style="font-size: 14px; color: #666;">家長送出的所有托育需求單會顯示於此。您可以點擊「管理狀態與派發」來更新狀態與填寫伴玩人員資料。</p>
+                    <div id="admin-requests-list">載入資料中...</div>
+                </div>
+            </div>
+
+            <div id="admin-tab-content" class="admin-tab-content">
+                <div class="admin-card">
+                    <h3 style="color:#d63031;">💌 管理家長公開留言</h3>
+                    <div id="admin-feedback-list"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3 style="color:#27ae60;">📄 管理合約書連結</h3>
+                    <input type="text" id="new-contract-title" class="admin-input" placeholder="按鈕標題 (例如：📄 點我看合約書)">
+                    <input type="text" id="new-contract-link" class="admin-input" placeholder="雲端硬碟連結網址">
+                    <button class="btn" style="background:#27ae60; box-shadow:0 4px 0px #1e8449;" onclick="addContractLink()">➕ 新增合約連結</button>
+                    <div id="admin-contract-list" style="margin-top:15px;"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3 style="color:#8e44ad;">⚖️ 管理比較表格（為什麼需要登記證）</h3>
+                    <div style="display:flex; gap:10px;"><input type="text" id="new-comp-indicator" class="admin-input" placeholder="檢核指標"></div>
+                    <div style="display:flex; gap:10px; margin-top:5px;">
+                        <div style="flex:1"><input type="text" id="new-comp-certTitle" class="admin-input" placeholder="✅ 取得登記證 (標題)"><textarea id="new-comp-certDesc" class="admin-input" rows="2" placeholder="次要說明"></textarea></div>
+                        <div style="flex:1"><input type="text" id="new-comp-uncertTitle" class="admin-input" placeholder="❓ 未取得登記 (標題)"><textarea id="new-comp-uncertDesc" class="admin-input" rows="2" placeholder="次要說明"></textarea></div>
+                    </div>
+                    <button class="btn" style="background:#8e44ad; box-shadow:0 4px 0px #732d91;" onclick="addComparison()">➕ 新增項目</button>
+                    <div id="admin-comp-list" style="margin-top:15px;"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3 style="color:#e67e22;">✨ 管理品牌核心特色</h3>
+                    <input type="text" id="new-about-title" class="admin-input" placeholder="特色標題">
+                    <textarea id="new-about-content" class="admin-input" rows="3" placeholder="特色說明"></textarea>
+                    <button class="btn" style="background:#e67e22; box-shadow:0 4px 0px #d35400;" onclick="addAbout()">➕ 新增特色</button>
+                    <div id="admin-about-list" style="margin-top:15px;"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3 style="color:#d63031;">📚 新增嚴選繪本推薦</h3>
+                    <input type="text" id="new-book-img-link" class="admin-input" placeholder="封面網址 (選填)">
+                    <input type="text" id="new-book-title" class="admin-input" placeholder="書名 (必填)">
+                    <div style="display:flex; gap:10px;"><input type="text" id="new-book-author" class="admin-input" placeholder="作者"><input type="text" id="new-book-illustrator" class="admin-input" placeholder="繪者"></div>
+                    <div style="display:flex; gap:10px;"><input type="text" id="new-book-translator" class="admin-input" placeholder="譯者"><input type="text" id="new-book-publisher" class="admin-input" placeholder="出版社"></div>
+                    <div style="display:flex; gap:10px;"><input type="text" id="new-book-age" class="admin-input" placeholder="適用年齡"><input type="text" id="new-book-category" class="admin-input" placeholder="分類"></div>
+                    <textarea id="new-book-outline" class="admin-input" rows="3" placeholder="故事大綱"></textarea>
+                    <button class="btn btn-danger" onclick="addBook()">➕ 確定新增</button>
+                    <div id="admin-books-list" style="margin-top:15px;"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3 style="color:#0984e3;">📢 新增育兒/臺中好康情報</h3>
+                    <input type="text" id="new-goodie-title" class="admin-input" placeholder="情報標題">
+                    <textarea id="new-goodie-content" class="admin-input" rows="3" placeholder="情報內容"></textarea>
+                    <input type="text" id="new-goodie-link" class="admin-input" placeholder="相關網址 (選填)">
+                    <button class="btn" style="background:#0984e3; box-shadow:0 4px 0px #0652dd;" onclick="addGoodie()">➕ 新增情報</button>
+                    <div id="admin-goodies-list" style="margin-top:15px;"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>💬 新增 Q&A</h3>
+                    <input type="text" id="new-faq-q" class="admin-input" placeholder="問題">
+                    <textarea id="new-faq-a" class="admin-input" rows="3" placeholder="回答"></textarea>
+                    <button class="btn btn-danger" onclick="addFaq()">➕ 新增</button>
+                    <div id="admin-faq-list" style="margin-top:15px;"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>🌟 新增原創資源 (教案、歌曲)</h3>
+                    <select id="new-res-type" class="admin-input"><option value="lesson">📂 精選互動教案</option><option value="song">🎵 原創精選歌曲</option></select>
+                    <input type="text" id="new-res-name" class="admin-input" placeholder="資源名稱">
+                    <input type="text" id="new-res-link" class="admin-input" placeholder="網址連結">
+                    <input type="text" id="new-res-copyright" class="admin-input" placeholder="版權資訊">
+                    <button class="btn btn-danger" onclick="addResource()">➕ 新增資源</button>
+                    <div id="admin-res-list" style="margin-top:15px;"></div>
+                </div>
+            </div>
+
+            <div id="admin-tab-settings" class="admin-tab-content">
+                <div class="admin-card" style="border-left: 5px solid #0984e3;">
+                    <h3 style="color:#0984e3;">⚙️ 家長會員註冊欄位管理</h3>
+                    <p style="font-size: 14px; color: #666;">可動態新增/刪除家長註冊時需填寫的欄位（信箱密碼不可刪除）。</p>
+                    <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                        <input type="text" id="new-field-id" class="admin-input" placeholder="英文代號" style="flex:1;">
+                        <input type="text" id="new-field-label" class="admin-input" placeholder="顯示名稱" style="flex:1;">
+                        <select id="new-field-type" class="admin-input" style="flex:1;"><option value="text">純文字</option><option value="number">數字</option></select>
+                        <button class="btn" style="background:#0984e3; margin:0;" onclick="addRegistrationField()">➕ 新增欄位</button>
+                    </div>
+                    <div id="admin-reg-fields-list"></div>
+                </div>
+
+                <div class="admin-card" style="border: 2px solid #b2bec3; background-color: #fdfdfd;">
+                    <h3 style="color:#2d3436;">🔒 系統設定：修改管理員密碼</h3>
+                    <p style="font-size: 14px; color: #666;">預設密碼為 <strong>play25</strong>。</p>
+                    <input type="password" id="setting-old-pwd" class="admin-input" placeholder="請輸入『舊密碼』">
+                    <input type="password" id="setting-new-pwd" class="admin-input" placeholder="請設定『新密碼』">
+                    <button class="btn" style="background:#636e72; box-shadow: 0 4px 0px #2d3436;" onclick="changePassword()">💾 確認修改密碼</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 彈出視窗：管理托育需求單狀態與派發 ================= -->
+    <div id="req-detail-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 800px;">
+            <h3 style="color:#e67e22; text-align: center; border-bottom:2px solid #ffd3b6; padding-bottom:10px;">📄 需求單管理與派發</h3>
+            
+            <div id="req-detail-content" style="background:#f1f8f6; padding:20px; border-radius:10px; font-size:15px; line-height:1.8; margin-bottom:15px; border: 1px solid #a8e6cf;">
+                <!-- 內容動態插入 -->
+            </div>
+            
+            <h4 style="color:#d63031; margin-bottom:5px; margin-top:20px; font-size:18px;">📌 狀態管理與伴玩人員派發</h4>
+            <div style="background:#fffaf0; border:2px dashed #ffb7b2; padding:20px; border-radius:10px;">
+                <label style="font-weight:bold; color:#2c3e50;">訂單目前狀態：</label>
+                <select id="admin-req-status" class="admin-input" style="border-color:#e67e22; font-weight:bold; color:#d35400;" onchange="togglePlaymateForm()">
+                    <option value="待處理">🟡 待處理</option>
+                    <option value="尋找人員中">🔵 尋找人員中</option>
+                    <option value="媒合成功">🟢 媒合成功 (派發人員)</option>
+                    <option value="已結案">⚫ 已結案</option>
+                    <option value="已取消">🔴 已取消</option>
+                </select>
+
+                <div id="playmate-info-section" style="display:none; margin-top:20px; border-top:2px solid #ffb7b2; padding-top:15px;">
+                    <h4 style="color:#27ae60; margin-top:0;">📝 填寫伴玩人員資料 (將顯示給家長)</h4>
+                    
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1"><label class="req-label">姓名：</label><input type="text" id="pm-name" class="admin-input" placeholder="真實姓名"></div>
+                        <div style="flex:1"><label class="req-label">暱稱：</label><input type="text" id="pm-nickname" class="admin-input" placeholder="例如：蘋果姊姊"></div>
+                        <div style="flex:1"><label class="req-label">出生年：</label><input type="number" id="pm-birthyear" class="admin-input" placeholder="西元年(例:2000)"></div>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1"><label class="req-label">學歷：</label><input type="text" id="pm-edu" class="admin-input" placeholder="例如：大學"></div>
+                        <div style="flex:1"><label class="req-label">科系：</label><input type="text" id="pm-major" class="admin-input" placeholder="例如：幼兒保育系"></div>
+                        <div style="flex:1">
+                            <label class="req-label">性別：</label>
+                            <select id="pm-gender" class="admin-input"><option value="女">女</option><option value="男">男</option></select>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1"><label class="req-label">連絡電話：</label><input type="text" id="pm-phone" class="admin-input" placeholder="09xx..."></div>
+                        <div style="flex:1"><label class="req-label">電子信箱：</label><input type="email" id="pm-email" class="admin-input"></div>
+                    </div>
+
+                    <label class="req-label">專長 / 特質：</label>
+                    <input type="text" id="pm-skills" class="admin-input" placeholder="例如：繪本導讀、手作、耐心、活潑...">
+
+                    <label class="req-label">經歷 (時間、單位、內容)：</label>
+                    <textarea id="pm-exp" class="admin-input" rows="3" placeholder="例如：2023-2024 / XX幼兒園 / 實習教保員..."></textarea>
+
+                    <label class="req-label">專業證照：</label>
+                    <input type="text" id="pm-certs" class="admin-input" placeholder="例如：單一級保母人員技術士證...">
+
+                    <label class="req-label">接受過的急救訓練 (可複選)：</label>
+                    <div class="checkbox-group" id="pm-firstaid-group">
+                        <label><input type="checkbox" value="CPR證照" class="pm-firstaid"> CPR證照</label>
+                        <label><input type="checkbox" value="嬰兒梗塞急救" class="pm-firstaid"> 嬰兒梗塞急救</label>
+                        <label><input type="checkbox" value="心肺復甦暨自動體外電擊器合格證書" class="pm-firstaid"> 心肺復甦暨AED證書</label>
+                        <label><input type="checkbox" value="其他" class="pm-firstaid" onchange="document.getElementById('pm-firstaid-other').style.display = this.checked ? 'inline-block' : 'none'"> 其他</label>
+                    </div>
+                    <input type="text" id="pm-firstaid-other" class="admin-input" placeholder="請填寫其他急救訓練..." style="display:none; margin-top:5px; border-color:#a8e6cf;">
+
+                    <label class="req-label">交通工具 (可複選)：</label>
+                    <div class="checkbox-group" id="pm-transport-group">
+                        <label><input type="checkbox" value="機車" class="pm-transport"> 機車</label>
+                        <label><input type="checkbox" value="汽車" class="pm-transport"> 汽車</label>
+                        <label><input type="checkbox" value="捷運" class="pm-transport"> 捷運</label>
+                        <label><input type="checkbox" value="公車" class="pm-transport"> 公車</label>
+                    </div>
+
+                    <label class="req-label">自我介紹：</label>
+                    <textarea id="pm-intro" class="admin-input" rows="4" placeholder="向家長簡單介紹自己..."></textarea>
+                </div>
+
+                <label class="req-label">內部備註 (僅後台可見)：</label>
+                <textarea id="admin-req-note" class="admin-input" rows="2" placeholder="後台備忘錄..."></textarea>
+                <input type="hidden" id="admin-req-note-id">
+            </div>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn btn-danger" onclick="saveReqAdminData()">💾 儲存狀態與資料</button>
+                <button class="btn" style="background:#ddd; color:#555; box-shadow: 0 4px 0px #bbb;" onclick="closeModal('req-detail-modal')">取消 / 關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 彈出視窗：編輯通用內容資料 ================= -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="color:#ff8b94; text-align: center;">編輯資料</h3>
+            <input type="hidden" id="edit-id"><input type="hidden" id="edit-collection">
+            
+            <!-- 合約連結編輯區 -->
+            <div id="edit-contract-inputs" style="display:none;">
+                <label class="req-label">標題：</label><input type="text" id="edit-contract-title" class="admin-input">
+                <label class="req-label">連結：</label><input type="text" id="edit-contract-link" class="admin-input">
+            </div>
+            
+            <!-- 比較表格編輯區 -->
+            <div id="edit-comp-inputs" style="display:none;">
+                <label class="req-label">指標：</label><input type="text" id="edit-comp-indicator" class="admin-input">
+                <label class="req-label">✅ 取得登記證 (標題)：</label><input type="text" id="edit-comp-certTitle" class="admin-input">
+                <label class="req-label">✅ (說明)：</label><textarea id="edit-comp-certDesc" class="admin-input" rows="2"></textarea>
+                <label class="req-label">❓ 未取得登記 (標題)：</label><input type="text" id="edit-comp-uncertTitle" class="admin-input">
+                <label class="req-label">❓ (說明)：</label><textarea id="edit-comp-uncertDesc" class="admin-input" rows="2"></textarea>
+            </div>
+            
+            <!-- 品牌特色編輯區 -->
+            <div id="edit-about-inputs" style="display:none;">
+                <label class="req-label">特色標題：</label><input type="text" id="edit-about-title" class="admin-input">
+                <label class="req-label">內容：</label><textarea id="edit-about-content" class="admin-input" rows="4"></textarea>
+            </div>
+            
+            <!-- Q&A編輯區 -->
+            <div id="edit-faq-inputs" style="display:none;">
+                <label class="req-label">問題：</label><input type="text" id="edit-faq-q" class="admin-input">
+                <label class="req-label">回答：</label><textarea id="edit-faq-a" class="admin-input" rows="4"></textarea>
+            </div>
+            
+            <!-- 資源編輯區 -->
+            <div id="edit-res-inputs" style="display:none;">
+                <label class="req-label">分類：</label>
+                <select id="edit-res-type" class="admin-input">
+                    <option value="lesson">精選互動教案</option>
+                    <option value="song">原創精選歌曲</option>
+                </select>
+                <label class="req-label">名稱：</label><input type="text" id="edit-res-name" class="admin-input">
+                <label class="req-label">網址：</label><input type="text" id="edit-res-link" class="admin-input">
+                <label class="req-label">版權：</label><input type="text" id="edit-res-copyright" class="admin-input">
+            </div>
+            
+            <!-- 情報編輯區 -->
+            <div id="edit-goodie-inputs" style="display:none;">
+                <label class="req-label">標題：</label><input type="text" id="edit-goodie-title" class="admin-input">
+                <label class="req-label">內容：</label><textarea id="edit-goodie-content" class="admin-input" rows="3"></textarea>
+                <label class="req-label">連結：</label><input type="text" id="edit-goodie-link" class="admin-input">
+            </div>
+            
+            <!-- 繪本編輯區 -->
+            <div id="edit-book-inputs" style="display:none;">
+                <label class="req-label">圖片網址：</label><input type="text" id="edit-book-img-link" class="admin-input">
+                <label class="req-label">書名：</label><input type="text" id="edit-book-title" class="admin-input">
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1"><label class="req-label">作者：</label><input type="text" id="edit-book-author" class="admin-input"></div>
+                    <div style="flex:1"><label class="req-label">繪者：</label><input type="text" id="edit-book-illustrator" class="admin-input"></div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1"><label class="req-label">譯者：</label><input type="text" id="edit-book-translator" class="admin-input"></div>
+                    <div style="flex:1"><label class="req-label">出版社：</label><input type="text" id="edit-book-publisher" class="admin-input"></div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1"><label class="req-label">適用年齡：</label><input type="text" id="edit-book-age" class="admin-input"></div>
+                    <div style="flex:1"><label class="req-label">分類：</label><input type="text" id="edit-book-category" class="admin-input"></div>
+                </div>
+                <label class="req-label">大綱：</label><textarea id="edit-book-outline" class="admin-input" rows="3"></textarea>
+            </div>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn btn-danger" onclick="saveEdit()">儲存修改</button>
+                <button class="btn" style="background:#ddd; color:#555; box-shadow: 0 4px 0px #bbb;" onclick="closeModal('edit-modal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 核心 JavaScript ================= -->
+    <script>
+        // 您的 Firebase 設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQoEsxmMU6ml0tEqrASpIm7TSNb6KF-Og",
+            authDomain: "planet-play-7970d.firebaseapp.com",
+            projectId: "planet-play-7970d",
+            storageBucket: "planet-play-7970d.firebasestorage.app",
+            messagingSenderId: "737732867174",
+            appId: "1:737732867174:web:b6b338d9f9fea965b969a7",
+            measurementId: "G-58YPM255JN"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 🌟 強制家長每次開啟網頁必須重新登入 (保留原本的 Session 設定)
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            .catch((error) => console.error("Auth persistence error:", error));
+
+        let faqs = [], resources = [], books = [], goodies = [], feedbacks = [], abouts = [], comparisons = [], contractLinks = [];
+        let careRequests = []; 
+        let currentUserRequests = []; // 存放當前登入家長的需求單
+        let userRequestsUnsubscribe = null;
+        let adminPassword = 'play25';
+
+        // 初始化密碼設定
+        db.collection("config").doc("admin_settings").onSnapshot((doc) => {
+            if (doc.exists) { adminPassword = doc.data().password; } 
+            else { db.collection("config").doc("admin_settings").set({ password: 'play25' }); }
+        });
+
+        // ================= 計算總預算 =================
+        function calculateTotalCost() {
+            const budget = parseFloat(document.getElementById('req-budget').value) || 0;
+            const hours = parseFloat(document.getElementById('req-hours').value) || 0;
+            document.getElementById('req-total-cost').innerText = (budget * hours).toLocaleString();
+        }
+
+        // ================= 後台分頁切換 =================
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('admin-tab-' + tabName).classList.add('active');
+        }
+
+        // ================= 家長會員與動態註冊 =================
+        let regFieldsConfig = [];
+        let isLoginMode = true;
+
+        const defaultRegFields = [
+            { id: "email", label: "電子信箱", type: "email", required: true, isSystem: true },
+            { id: "password", label: "密碼 (至少6碼)", type: "password", required: true, isSystem: true },
+            { id: "name", label: "家長姓名", type: "text", required: true, isSystem: false }
+        ];
+
+        db.collection("config").doc("registration_fields").onSnapshot((doc) => {
+            if (doc.exists) { regFieldsConfig = doc.data().fields || defaultRegFields; } 
+            else { db.collection("config").doc("registration_fields").set({ fields: defaultRegFields }); regFieldsConfig = defaultRegFields; }
+            renderAdminRegFields();
+        });
+
+        firebase.auth().onAuthStateChanged((user) => {
+            const authBtn = document.getElementById("user-auth-btn");
+            if (user) {
+                authBtn.innerText = "🪐 進入會員中心";
+                authBtn.onclick = () => { document.getElementById('member-modal').style.display = 'flex'; };
+                
+                // 監聽家長自己的預約單
+                if(userRequestsUnsubscribe) userRequestsUnsubscribe();
+                userRequestsUnsubscribe = db.collection("care_requests").where("userId", "==", user.uid)
+                    .onSnapshot(snap => {
+                        currentUserRequests = snap.docs.map(doc => ({id: doc.id, ...doc.data()})).sort((a,b)=>b.timestamp-a.timestamp);
+                        renderUserAppointments();
+                    });
+            } else {
+                authBtn.innerText = "家長登入 / 註冊";
+                authBtn.onclick = showUserLogin;
+                if(userRequestsUnsubscribe) { userRequestsUnsubscribe(); userRequestsUnsubscribe = null; }
+            }
+        });
+
+        function showUserLogin() { isLoginMode = true; renderAuthForm(); document.getElementById('user-login-modal').style.display = 'flex'; }
+        function toggleAuthMode() { isLoginMode = !isLoginMode; renderAuthForm(); }
+
+        function renderAuthForm() {
+            const container = document.getElementById("dynamic-auth-form");
+            const title = document.getElementById("auth-title");
+            const submitBtn = document.getElementById("auth-submit-btn");
+            const toggleLink = document.getElementById("auth-toggle-link");
+            container.innerHTML = "";
+
+            if (isLoginMode) {
+                title.innerText = "家長登入"; submitBtn.innerText = "登入"; toggleLink.innerText = "還沒有帳號？點此註冊";
+                container.innerHTML = `
+                    <label style="font-size:14px; font-weight:bold; color:#6d4c41; display:block; margin-top:10px;">電子信箱：</label>
+                    <input type="email" id="auth-email" class="admin-input">
+                    <label style="font-size:14px; font-weight:bold; color:#6d4c41; display:block; margin-top:10px;">密碼：</label>
+                    <input type="password" id="auth-password" class="admin-input">
+                `;
+            } else {
+                title.innerText = "家長註冊"; submitBtn.innerText = "完成註冊"; toggleLink.innerText = "已經有帳號了？點此登入";
+                let formHTML = "";
+                regFieldsConfig.forEach(field => {
+                    formHTML += `
+                        <label style="font-size:14px; font-weight:bold; color:#6d4c41; display:block; margin-top:10px;">
+                            ${field.label}${field.required ? ' <span style="color:red;">*</span>' : ''}
+                        </label>
+                        <input type="${field.type}" id="reg-${field.id}" class="admin-input dynamic-reg-input" data-id="${field.id}" placeholder="請輸入${field.label}">
+                    `;
+                });
+                container.innerHTML = formHTML;
+            }
+        }
+
+        function handleAuthSubmit() {
+            if (isLoginMode) {
+                const email = document.getElementById('auth-email').value;
+                const pwd = document.getElementById('auth-password').value;
+                if(!email || !pwd) return alert("請輸入信箱與密碼！");
+                firebase.auth().signInWithEmailAndPassword(email, pwd)
+                    .then(() => { alert("登入成功！"); closeModal('user-login-modal'); })
+                    .catch(err => alert("登入失敗：" + err.message));
+            } else {
+                const inputs = document.querySelectorAll('.dynamic-reg-input');
+                let userData = {}; let email = "", pwd = "";
+                for (let input of inputs) {
+                    const fieldId = input.getAttribute("data-id"); const val = input.value.trim();
+                    if (!val) return alert("請填寫所有欄位資訊！");
+                    if (fieldId === 'email') email = val;
+                    else if (fieldId === 'password') pwd = val;
+                    else userData[fieldId] = val;
+                }
+                firebase.auth().createUserWithEmailAndPassword(email, pwd)
+                    .then((userCredential) => {
+                        userData.email = email; userData.role = "parent"; userData.createdAt = Date.now();
+                        return db.collection("users").doc(userCredential.user.uid).set(userData);
+                    })
+                    .then(() => { alert("註冊成功！歡迎加入伴玩星球！"); closeModal('user-login-modal'); })
+                    .catch(err => alert("註冊失敗：" + err.message));
+            }
+        }
+
+        function userLogout() { firebase.auth().signOut().then(() => { alert("已登出帳號"); closeModal('member-modal'); }); }
+        
+        function switchMemberTab(tabId) {
+            document.querySelectorAll('.member-tab').forEach(el => el.style.display = 'none');
+            document.getElementById('tab-' + tabId).style.display = 'block';
+        }
+
+        // ================= 托育需求單送出 =================
+        function submitCareRequest() {
+            const parentName = document.getElementById('req-parent-name').value.trim();
+            const lineName = document.getElementById('req-line-name').value.trim();
+            const email = document.getElementById('req-email').value.trim();
+            const phone = document.getElementById('req-phone').value.trim();
+            const relation = document.getElementById('req-relation').value;
+            const childName = document.getElementById('req-child-name').value.trim();
+            const gender = document.querySelector('input[name="req-gender"]:checked').value;
+            const childAge = document.getElementById('req-child-age').value.trim();
+            const hobbies = document.getElementById('req-hobbies').value.trim();
+            const routine = document.getElementById('req-routine').value.trim();
+            const address = document.getElementById('req-address').value.trim();
+            const timeslot = document.getElementById('req-timeslot').value.trim();
+            const budget = document.getElementById('req-budget').value.trim();
+            const hours = document.getElementById('req-hours').value.trim();
+            const notes = document.getElementById('req-notes').value.trim();
+            
+            const specialNeeds = Array.from(document.querySelectorAll('#req-special-needs input:checked')).map(el => el.value);
+            const skills = Array.from(document.querySelectorAll('#req-skills input:checked')).map(el => el.value);
+
+            if (!parentName || !lineName || !email || !phone || !relation || !childName || !childAge || !hobbies || !routine || !address || !timeslot || !budget || !hours) {
+                return alert("請填寫所有標示 * 號的必填欄位！");
+            }
+            if (specialNeeds.length === 0) return alert("幼兒特別需求(病史) 請至少勾選一項！");
+            if (skills.length === 0) return alert("希望伴玩人員專長 請至少勾選一項！");
+
+            const requestData = {
+                parentName, lineName, email, phone, relation,
+                childName, gender, childAge, hobbies, routine, specialNeeds, address, timeslot, 
+                budget, hours, totalCost: (parseFloat(budget) * parseFloat(hours)), skills, notes,
+                timestamp: Date.now(),
+                userId: firebase.auth().currentUser ? firebase.auth().currentUser.uid : "unknown",
+                status: "待處理",
+                adminNote: "", 
+                playmateInfo: null, 
+                parentFeedback: null // 預留家長填寫的回饋
+            };
+
+            db.collection("care_requests").add(requestData)
+                .then(() => {
+                    alert("送出完畢，請至官方LINE與我們聯絡，以利人員為您服務！");
+                    // 清空表單
+                    document.querySelectorAll('#tab-request input[type="text"], #tab-request input[type="email"], #tab-request input[type="tel"], #tab-request input[type="number"], #tab-request textarea').forEach(el => el.value = '');
+                    document.querySelectorAll('#tab-request input[type="checkbox"]').forEach(el => el.checked = false);
+                    document.getElementById('req-relation').selectedIndex = 0;
+                    document.getElementById('req-total-cost').innerText = '0';
+                    
+                    const lineId = "@563xerwv"; 
+                    const message = encodeURIComponent(`您好，我是 ${parentName}，我已在官網填寫托育需求單完畢！`);
+                    window.open(`https://line.me/R/oaMessage/${lineId}/?${message}`, '_blank');
+                    switchMemberTab('appointments');
+                })
+                .catch(err => { alert("表單送出失敗：" + err.message); });
+        }
+
+        // ================= 🌟 前台顯示家長預約進度與歷史紀錄 🌟 =================
+        
+        // 產生單一預約卡片的 HTML
+        function generateReqCardHTML(req, isActive) {
+            let statusColor = "#e67e22"; // 待處理或尋找人員中 (橘)
+            if(req.status === '媒合成功') statusColor = "#27ae60"; // 綠
+            else if(req.status === '已結案' || req.status === '已取消') statusColor = "#7f8c8d"; // 灰
+
+            // 伴玩人員履歷區塊
+            let playmateHTML = "";
+            if (req.playmateInfo) {
+                const pm = req.playmateInfo;
+                playmateHTML = `
+                    <div class="playmate-card">
+                        <h4>${req.status === '媒合成功' ? '🎉 為您安排的伴玩人員資料' : '👤 伴玩人員紀錄'}</h4>
+                        <div class="pm-row"><div class="pm-label">姓名/暱稱</div><div class="pm-value">${pm.name} (${pm.nickname})</div></div>
+                        <div class="pm-row"><div class="pm-label">出生/性別</div><div class="pm-value">${pm.birthyear} 年 / ${pm.gender}性</div></div>
+                        <div class="pm-row"><div class="pm-label">學歷/科系</div><div class="pm-value">${pm.edu} - ${pm.major}</div></div>
+                        <div class="pm-row"><div class="pm-label">連絡電話</div><div class="pm-value"><a href="tel:${pm.phone}">${pm.phone}</a></div></div>
+                        <div class="pm-row"><div class="pm-label">電子信箱</div><div class="pm-value">${pm.email}</div></div>
+                        <div class="pm-row"><div class="pm-label">專長/特質</div><div class="pm-value">${pm.skills}</div></div>
+                        <div class="pm-row"><div class="pm-label">相關經歷</div><div class="pm-value" style="white-space:pre-wrap;">${pm.exp}</div></div>
+                        <div class="pm-row"><div class="pm-label">專業證照</div><div class="pm-value">${pm.certs || '無'}</div></div>
+                        <div class="pm-row"><div class="pm-label">急救訓練</div><div class="pm-value">${pm.firstaid.join('、 ')}</div></div>
+                        <div class="pm-row"><div class="pm-label">交通工具</div><div class="pm-value">${pm.transport.join('、 ')}</div></div>
+                        <div class="pm-row"><div class="pm-label">自我介紹</div><div class="pm-value" style="white-space:pre-wrap; background:#fff; padding:10px; border-radius:8px; border:1px solid #ddd; margin-top:5px;">${pm.intro}</div></div>
+                    </div>
+                `;
+            }
+
+            // 【操作區】：若為媒合成功，可點擊「完成服務並給予回饋」
+            let actionHTML = "";
+            if (req.status === '媒合成功') {
+                actionHTML = `
+                    <div style="margin-top:15px; border-top:1px dashed #eee; padding-top:10px; text-align:right;">
+                        <button class="btn btn-edit" style="margin:0; font-size:14px; background:#a8e6cf; color:#2c3e50;" 
+                                onclick="document.getElementById('review-box-${req.id}').style.display='block'">
+                            ✅ 標示為已完成並填寫心得
+                        </button>
+                    </div>
+                    
+                    <div id="review-box-${req.id}" style="display:none; margin-top:15px; background:#f9fbfd; padding:15px; border-radius:10px; border:2px dashed #a8e6cf; text-align:left;">
+                        <label style="font-weight:bold; color:#27ae60; display:block; margin-bottom:5px;">📝 填寫私密心得 (僅後台可見)：</label>
+                        <textarea id="review-text-${req.id}" class="admin-input" rows="3" placeholder="請分享您的伴玩體驗，您的鼓勵是我們前進的動力！"></textarea>
+                        <div style="text-align:right; margin-top:10px;">
+                            <button class="btn btn-danger" style="margin:0; font-size:14px;" onclick="submitReview('${req.id}')">🚀 送出心得並結案</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 【已填寫回饋顯示區】：歷史紀錄中顯示曾留下的評價
+            let feedbackHTML = "";
+            if (req.parentFeedback) {
+                feedbackHTML = `
+                    <div style="margin-top:15px; background:#fffaf0; padding:15px; border-radius:10px; border:1px solid #ffd3b6;">
+                        <strong style="color:#d63031;">💬 您留下的心得回饋：</strong>
+                        <p style="margin:5px 0 0 0; color:#555; font-size:14px; white-space:pre-wrap;">${req.parentFeedback}</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <div style="background:white; border:2px solid ${statusColor}; border-radius:10px; padding:15px; margin-bottom:15px; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px dashed #eee; padding-bottom:10px;">
+                        <strong style="font-size:16px;">寶貝：${req.childName}</strong>
+                        <span style="background:${statusColor}; color:white; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:bold;">狀態：${req.status || '待處理'}</span>
+                    </div>
+                    <div style="font-size:14px; color:#555; line-height:1.6;">
+                        <strong>預約時間：</strong>${req.timeslot.replace(/\n/g, ' ')}<br>
+                        <strong>托育地點：</strong>${req.address}<br>
+                        <strong>預計費用：</strong>總計 ${req.totalCost} 元 (${req.budget}元/時 × ${req.hours}小時)
+                    </div>
+                    ${playmateHTML}
+                    ${actionHTML}
+                    ${feedbackHTML}
+                </div>
+            `;
+        }
+
+        // 分離並渲染兩大區塊：進行中的預約 vs 歷史紀錄
+        function renderUserAppointments() {
+            const activeContainer = document.getElementById('user-appointments-list');
+            const historyContainer = document.getElementById('user-history-list');
+
+            // 過濾資料
+            const activeReqs = currentUserRequests.filter(r => r.status !== '已結案' && r.status !== '已取消');
+            const historyReqs = currentUserRequests.filter(r => r.status === '已結案' || r.status === '已取消');
+
+            // 渲染進行中的預約
+            if (activeReqs.length === 0) {
+                activeContainer.innerHTML = '<div style="background:#f1f8f6; padding:15px; border-radius:10px; text-align:center; color:#555;"><p>目前尚無進行中的預約。</p></div>';
+            } else {
+                activeContainer.innerHTML = activeReqs.map(req => generateReqCardHTML(req, true)).join('');
+            }
+
+            // 渲染歷史紀錄
+            if (historyReqs.length === 0) {
+                historyContainer.innerHTML = '<div style="background:#fffaf0; padding:15px; border-radius:10px; text-align:center; color:#555;"><p>目前尚無歷史紀錄。</p></div>';
+            } else {
+                historyContainer.innerHTML = historyReqs.map(req => generateReqCardHTML(req, false)).join('');
+            }
+        }
+
+        // 🌟 家長送出「完成並評價」功能 (僅限後台可見) 🌟
+        function submitReview(reqId) {
+            const text = document.getElementById(`review-text-${reqId}`).value.trim();
+            if(!text) return alert("請填寫心得內容喔！");
+
+            // 1. 更新訂單狀態為「已結案」並存入 parentFeedback (僅存於需求單內，後台可見)
+            db.collection("care_requests").doc(reqId).update({
+                status: "已結案",
+                parentFeedback: text
+            }).then(() => {
+                alert("✅ 感謝您的回饋！訂單已順利結案，紀錄已移至「歷史紀錄」。");
+                // 因為我們有 onSnapshot 監聽 care_requests，所以畫面會自動切換與重新渲染！
+                switchMemberTab('history');
+            }).catch(e => alert("送出失敗：" + e.message));
+        }
+
+        // ================= 後台邏輯與資料庫監聽 =================
+        db.collection("care_requests").onSnapshot(snap => {
+            careRequests = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp);
+            renderAdminRequests();
+        });
+
+        db.collection("contractLinks").onSnapshot(snap => { contractLinks = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
+        db.collection("abouts").onSnapshot(snap => { abouts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
+        db.collection("faqs").onSnapshot(snap => { faqs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
+        db.collection("resources").onSnapshot(snap => { resources = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
+        db.collection("books").onSnapshot(snap => { books = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp); renderFront(); renderAdmin(); });
+        db.collection("goodies").onSnapshot(snap => { goodies = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp); renderFront(); renderAdmin(); });
+        db.collection("feedbacks").onSnapshot(snap => { feedbacks = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.timestamp - a.timestamp); renderFront(); renderAdmin(); });
+        db.collection("comparisons").onSnapshot(snap => { comparisons = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.timestamp - b.timestamp); renderFront(); renderAdmin(); });
+
+        function showLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        function verifyLogin() {
+            if(document.getElementById('admin-pwd').value === adminPassword) { 
+                closeModal('login-modal'); document.getElementById('front-view').style.display = 'none'; document.getElementById('admin-view').style.display = 'block';
+            } else { alert('密碼錯誤！'); }
+        }
+        function logoutAdmin() { document.getElementById('admin-view').style.display = 'none'; document.getElementById('front-view').style.display = 'block'; }
+
+        // 修改密碼
+        function changePassword() {
+            const oldPwd = document.getElementById('setting-old-pwd').value;
+            const newPwd = document.getElementById('setting-new-pwd').value;
+            if(oldPwd !== adminPassword) return alert('舊密碼輸入錯誤，請重新確認！');
+            if(!newPwd || newPwd.trim() === '') return alert('新密碼不能為空白！');
+            db.collection("config").doc("admin_settings").update({ password: newPwd }).then(() => {
+                alert('密碼修改成功！請牢記您的新密碼。');
+                document.getElementById('setting-old-pwd').value = '';
+                document.getElementById('setting-new-pwd').value = '';
+            }).catch(e => console.error("密碼更新失敗", e));
+        }
+
+        // 後台註冊欄位管理
+        function renderAdminRegFields() {
+            const listDiv = document.getElementById("admin-reg-fields-list");
+            if(!listDiv) return;
+            listDiv.innerHTML = regFieldsConfig.map((field, index) => `
+                <div class="admin-list-item">
+                    <div>
+                        <strong>${field.label}</strong> <span style="font-size:12px; color:#888;">(代號: ${field.id}, 類型: ${field.type})</span>
+                        ${field.isSystem ? '<span style="background:#ffd3b6; font-size:12px; padding:2px 6px; border-radius:5px;">系統必備</span>' : ''}
+                    </div>
+                    ${!field.isSystem ? `<button class="btn btn-danger" style="padding:4px 10px; margin:0; box-shadow:none;" onclick="removeRegField(${index})">刪除</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function addRegistrationField() {
+            const id = document.getElementById('new-field-id').value.trim();
+            const label = document.getElementById('new-field-label').value.trim();
+            const type = document.getElementById('new-field-type').value;
+            if (!id || !label) return alert("請輸入欄位代號與名稱！");
+            if (regFieldsConfig.find(f => f.id === id)) return alert("此英文代號已存在！");
+            const newField = { id, label, type, required: true, isSystem: false };
+            const updatedFields = [...regFieldsConfig, newField];
+            db.collection("config").doc("registration_fields").update({ fields: updatedFields })
+                .then(() => {
+                    document.getElementById('new-field-id').value = ''; document.getElementById('new-field-label').value = ''; alert("新增成功！");
+                });
+        }
+
+        function removeRegField(index) {
+            if(confirm("確定要刪除這個註冊欄位嗎？")) {
+                const updatedFields = [...regFieldsConfig]; updatedFields.splice(index, 1);
+                db.collection("config").doc("registration_fields").update({ fields: updatedFields });
+            }
+        }
+
+        // 🔥 刪除通用文件與需求單
+        function deleteDoc(collectionName, id) {
+            if(confirm('確定要刪除這筆資料嗎？刪除後將無法恢復！')) {
+                db.collection(collectionName).doc(id).delete().catch(e => alert("刪除失敗：" + e));
+            }
+        }
+        function deleteReq(id) {
+            if(confirm('確定要「徹底刪除」這張托育需求單嗎？刪除後無法復原喔！')) {
+                db.collection('care_requests').doc(id).delete().catch(e => alert("刪除失敗：" + e));
+            }
+        }
+
+        // 🔥 渲染後台：托育需求單列表
+        function renderAdminRequests() {
+            const listDiv = document.getElementById("admin-requests-list");
+            if(!listDiv) return;
+            if(careRequests.length === 0) { listDiv.innerHTML = "<p style='color:#888;'>目前尚無托育需求單。</p>"; return; }
+
+            listDiv.innerHTML = careRequests.map(req => {
+                let statusBadge = `<span style="background:#e67e22; color:white; padding:2px 8px; border-radius:12px; font-size:12px;">${req.status || '待處理'}</span>`;
+                if(req.status === '媒合成功') statusBadge = `<span style="background:#27ae60; color:white; padding:2px 8px; border-radius:12px; font-size:12px;">媒合成功</span>`;
+                if(req.status === '已結案') statusBadge = `<span style="background:#7f8c8d; color:white; padding:2px 8px; border-radius:12px; font-size:12px;">已結案</span>`;
+                
+                return `
+                <div class="admin-list-item" style="display:block; background:#fff; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.03);">
+                    <div style="font-size:15px; line-height:1.8; color:#2c3e50;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>👨‍👩‍👧 家長：${req.parentName} / 幼兒：${req.childName}</strong>
+                            ${statusBadge}
+                        </div>
+                        <strong>時段：</strong>${req.timeslot.replace(/\n/g, ' ')}<br>
+                        <strong>費用：</strong>${req.budget}元/時 × ${req.hours}小時 = ${req.totalCost}元<br>
+                        <strong>地點：</strong>${req.address}
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px; border-top:1px dashed #eee; padding-top:10px;">
+                        <button class="btn btn-edit" style="padding:6px 15px; font-size:14px; margin:0;" onclick="openReqDetail('${req.id}')">🔍 編輯管理與派發</button>
+                        <button class="btn btn-danger" style="padding:6px 15px; font-size:14px; margin:0; background:#e74c3c; box-shadow:0 3px 0px #c0392b;" onclick="deleteReq('${req.id}')">🗑️ 刪除</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // 🔥 開啟需求單詳細內容與伴玩表單
+        function openReqDetail(id) {
+            const req = careRequests.find(r => r.id === id);
+            if(!req) return;
+            
+            const submitTime = new Date(req.timestamp).toLocaleString('zh-TW');
+            
+            // 處理可能由家長送出的回饋顯示於後台
+            let parentFeedbackHTML = '';
+            if (req.parentFeedback) {
+                parentFeedbackHTML = `
+                    <div style="margin-top:15px; background:#fff3e0; padding:15px; border-radius:10px; border:2px dashed #f39c12;">
+                        <strong style="color:#d35400;">💬 家長私密心得回饋 (已結案)：</strong>
+                        <p style="margin:5px 0 0 0; color:#555; white-space:pre-wrap;">${req.parentFeedback}</p>
+                    </div>
+                `;
+            }
+
+            const contentHTML = `
+                <div style="font-size:13px; color:#888; text-align:right; margin-bottom:10px;">填單時間：${submitTime}</div>
+                <strong style="color:#27ae60; font-size:16px;">【家長基本資料】</strong><br>
+                姓名：${req.parentName} (${req.relation}) | LINE：${req.lineName} | 電話：${req.phone} | 信箱：${req.email}<br><br>
+                
+                <strong style="color:#d63031; font-size:16px;">【幼兒與托育需求】</strong><br>
+                姓名：${req.childName} (${req.gender} / ${req.childAge}) | 興趣：${req.hobbies} | 作息：${req.routine}<br>
+                特殊需求(病史)：<span style="color:#e67e22; font-weight:bold;">${req.specialNeeds.join('、')}</span><br>
+                伴玩地點：${req.address}<br>
+                時段：${req.timeslot}<br>
+                費用：總計 ${req.totalCost} 元 (時薪 ${req.budget} × ${req.hours}小時)<br>
+                期望專長：${req.skills.join('、')}<br>
+                注意事項：${req.notes || '無'}
+                ${parentFeedbackHTML}
+            `;
+            
+            document.getElementById('req-detail-content').innerHTML = contentHTML;
+            document.getElementById('admin-req-note').value = req.adminNote || '';
+            document.getElementById('admin-req-note-id').value = id;
+            document.getElementById('admin-req-status').value = req.status || '待處理';
+            
+            // 重置伴玩表單
+            document.querySelectorAll('#playmate-info-section input[type="text"], #playmate-info-section input[type="number"], #playmate-info-section input[type="email"], #playmate-info-section textarea').forEach(el => el.value = '');
+            document.querySelectorAll('#playmate-info-section input[type="checkbox"]').forEach(el => el.checked = false);
+            document.getElementById('pm-firstaid-other').style.display = 'none';
+
+            // 若已有資料則填入
+            if(req.playmateInfo) {
+                const pm = req.playmateInfo;
+                document.getElementById('pm-name').value = pm.name || '';
+                document.getElementById('pm-nickname').value = pm.nickname || '';
+                document.getElementById('pm-birthyear').value = pm.birthyear || '';
+                document.getElementById('pm-edu').value = pm.edu || '';
+                document.getElementById('pm-major').value = pm.major || '';
+                document.getElementById('pm-gender').value = pm.gender || '女';
+                document.getElementById('pm-phone').value = pm.phone || '';
+                document.getElementById('pm-email').value = pm.email || '';
+                document.getElementById('pm-skills').value = pm.skills || '';
+                document.getElementById('pm-exp').value = pm.exp || '';
+                document.getElementById('pm-certs').value = pm.certs || '';
+                document.getElementById('pm-intro').value = pm.intro || '';
+                
+                if(pm.firstaid) {
+                    document.querySelectorAll('.pm-firstaid').forEach(chk => {
+                        if(pm.firstaid.includes(chk.value)) chk.checked = true;
+                    });
+                    const otherAid = pm.firstaid.find(a => !['CPR證照','嬰兒梗塞急救','心肺復甦暨自動體外電擊器合格證書','其他'].includes(a));
+                    if(otherAid) {
+                        document.querySelector('.pm-firstaid[value="其他"]').checked = true;
+                        document.getElementById('pm-firstaid-other').style.display = 'inline-block';
+                        document.getElementById('pm-firstaid-other').value = otherAid;
+                    }
+                }
+                if(pm.transport) {
+                    document.querySelectorAll('.pm-transport').forEach(chk => {
+                        if(pm.transport.includes(chk.value)) chk.checked = true;
+                    });
+                }
+            }
+
+            togglePlaymateForm();
+            document.getElementById('req-detail-modal').style.display = 'flex';
+        }
+
+        // 控制伴玩表單顯示/隱藏
+        function togglePlaymateForm() {
+            const status = document.getElementById('admin-req-status').value;
+            const form = document.getElementById('playmate-info-section');
+            // 當狀態為媒合成功 或 已結案，皆保持顯示伴玩人員資料供查看或修改
+            if(status === '媒合成功' || status === '已結案') { 
+                form.style.display = 'block'; 
+            } else { 
+                form.style.display = 'none'; 
+            }
+        }
+
+        // 🔥 儲存狀態與資料
+        function saveReqAdminData() {
+            const id = document.getElementById('admin-req-note-id').value;
+            const status = document.getElementById('admin-req-status').value;
+            const adminNote = document.getElementById('admin-req-note').value.trim();
+            
+            let playmateInfo = null;
+            if(status === '媒合成功' || status === '已結案') {
+                let firstaid = Array.from(document.querySelectorAll('.pm-firstaid:checked')).map(el => el.value);
+                if(firstaid.includes('其他')) {
+                    const otherText = document.getElementById('pm-firstaid-other').value.trim();
+                    firstaid = firstaid.filter(v => v !== '其他');
+                    if(otherText) firstaid.push(otherText);
+                }
+
+                playmateInfo = {
+                    name: document.getElementById('pm-name').value.trim(),
+                    nickname: document.getElementById('pm-nickname').value.trim(),
+                    birthyear: document.getElementById('pm-birthyear').value.trim(),
+                    edu: document.getElementById('pm-edu').value.trim(),
+                    major: document.getElementById('pm-major').value.trim(),
+                    gender: document.getElementById('pm-gender').value,
+                    phone: document.getElementById('pm-phone').value.trim(),
+                    email: document.getElementById('pm-email').value.trim(),
+                    skills: document.getElementById('pm-skills').value.trim(),
+                    exp: document.getElementById('pm-exp').value.trim(),
+                    certs: document.getElementById('pm-certs').value.trim(),
+                    firstaid: firstaid,
+                    transport: Array.from(document.querySelectorAll('.pm-transport:checked')).map(el => el.value),
+                    intro: document.getElementById('pm-intro').value.trim()
+                };
+            }
+
+            db.collection("care_requests").doc(id).update({ 
+                status: status, 
+                adminNote: adminNote,
+                playmateInfo: playmateInfo
+            })
+            .then(() => {
+                alert("資料已更新並儲存！");
+                closeModal('req-detail-modal');
+            })
+            .catch(e => alert("儲存失敗：" + e.message));
+        }
+
+        // ================= 各項內容的新增邏輯 =================
+        function addContractLink() {
+            const title = document.getElementById('new-contract-title').value, link = document.getElementById('new-contract-link').value;
+            if(!title || !link) return alert('請填寫標題與連結！');
+            db.collection("contractLinks").add({ title, link, timestamp: Date.now() }).then(() => {
+                document.getElementById('new-contract-title').value = ''; document.getElementById('new-contract-link').value = '';
+            });
+        }
+        function addComparison() {
+            const indicator = document.getElementById('new-comp-indicator').value;
+            const certTitle = document.getElementById('new-comp-certTitle').value, certDesc = document.getElementById('new-comp-certDesc').value;
+            const uncertTitle = document.getElementById('new-comp-uncertTitle').value, uncertDesc = document.getElementById('new-comp-uncertDesc').value;
+            if(!indicator || !certTitle || !uncertTitle) return alert('指標與雙方標題為必填欄位！');
+            db.collection("comparisons").add({ indicator, certTitle, certDesc, uncertTitle, uncertDesc, timestamp: Date.now() }).then(() => {
+                document.getElementById('new-comp-indicator').value = ''; document.getElementById('new-comp-certTitle').value = ''; document.getElementById('new-comp-certDesc').value = '';
+                document.getElementById('new-comp-uncertTitle').value = ''; document.getElementById('new-comp-uncertDesc').value = '';
+            });
+        }
+        function addAbout() {
+            const title = document.getElementById('new-about-title').value, content = document.getElementById('new-about-content').value;
+            if(!title || !content) return alert('請填寫完整特色標題與內容！');
+            db.collection("abouts").add({ title, content, timestamp: Date.now() }).then(() => { document.getElementById('new-about-title').value = ''; document.getElementById('new-about-content').value = ''; });
+        }
+        function addFeedback() {
+            const name = document.getElementById('fb-name').value || '匿名家長', age = document.getElementById('fb-age').value || '未填寫', content = document.getElementById('fb-content').value;
+            if(!content.trim()) return alert('請寫下您的留言內容喔！');
+            db.collection("feedbacks").add({ name: name, age: age, content: content, timestamp: Date.now() }).then(() => {
+                document.getElementById('fb-name').value = ''; document.getElementById('fb-age').value = ''; document.getElementById('fb-content').value = '';
+                alert('留言送出成功！非常感謝您的真實回饋！🚀');
+            });
+        }
+        function addFaq() {
+            const q = document.getElementById('new-faq-q').value, a = document.getElementById('new-faq-a').value;
+            if(!q || !a) return alert('請填寫完整問題與答案！');
+            db.collection("faqs").add({ q, a, timestamp: Date.now() }).then(() => { document.getElementById('new-faq-q').value = ''; document.getElementById('new-faq-a').value = ''; });
+        }
+        function addResource() {
+            const type = document.getElementById('new-res-type').value, name = document.getElementById('new-res-name').value, link = document.getElementById('new-res-link').value, copyright = document.getElementById('new-res-copyright').value;
+            if(!name || !link) return alert('請填寫資源名稱與連結！');
+            db.collection("resources").add({ type, name, link, copyright, timestamp: Date.now() }).then(() => { document.getElementById('new-res-name').value = ''; document.getElementById('new-res-link').value = ''; document.getElementById('new-res-copyright').value = ''; });
+        }
+        function addGoodie() {
+            const title = document.getElementById('new-goodie-title').value, content = document.getElementById('new-goodie-content').value, link = document.getElementById('new-goodie-link').value;
+            if(!title || !content) return alert('請填寫標題與內容！');
+            db.collection("goodies").add({ title, content, link, timestamp: Date.now() }).then(() => { document.getElementById('new-goodie-title').value = ''; document.getElementById('new-goodie-content').value = ''; document.getElementById('new-goodie-link').value = ''; alert('新增情報成功！'); });
+        }
+        function addBook() {
+            const title = document.getElementById('new-book-title').value;
+            if(!title) return alert('請填寫書名！');
+            db.collection("books").add({
+                title: title, imageUrl: document.getElementById('new-book-img-link').value, author: document.getElementById('new-book-author').value,
+                illustrator: document.getElementById('new-book-illustrator').value, translator: document.getElementById('new-book-translator').value,
+                publisher: document.getElementById('new-book-publisher').value, age: document.getElementById('new-book-age').value,
+                category: document.getElementById('new-book-category').value, outline: document.getElementById('new-book-outline').value,
+                timestamp: Date.now()
+            }).then(() => {
+                document.getElementById('new-book-img-link').value = ''; document.getElementById('new-book-title').value = ''; document.getElementById('new-book-author').value = '';
+                document.getElementById('new-book-illustrator').value = ''; document.getElementById('new-book-translator').value = ''; document.getElementById('new-book-publisher').value = '';
+                document.getElementById('new-book-age').value = ''; document.getElementById('new-book-category').value = ''; document.getElementById('new-book-outline').value = '';
+                alert('繪本新增成功！');
+            });
+        }
+
+        // ================= 編輯與修改功能 (開窗與儲存) =================
+        function hideAllEditInputs() {
+            document.getElementById('edit-contract-inputs').style.display = 'none'; document.getElementById('edit-comp-inputs').style.display = 'none';
+            document.getElementById('edit-about-inputs').style.display = 'none'; document.getElementById('edit-faq-inputs').style.display = 'none';
+            document.getElementById('edit-res-inputs').style.display = 'none'; document.getElementById('edit-goodie-inputs').style.display = 'none';
+            document.getElementById('edit-book-inputs').style.display = 'none';
+        }
+
+        function openEditContract(id) {
+            hideAllEditInputs();
+            const c = contractLinks.find(x => x.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'contractLinks';
+            document.getElementById('edit-contract-title').value = c.title; document.getElementById('edit-contract-link').value = c.link; 
+            document.getElementById('edit-contract-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
+        }
+        function openEditComparison(id) {
+            hideAllEditInputs();
+            const c = comparisons.find(x => x.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'comparisons';
+            document.getElementById('edit-comp-indicator').value = c.indicator; 
+            document.getElementById('edit-comp-certTitle').value = c.certTitle; document.getElementById('edit-comp-certDesc').value = c.certDesc || '';
+            document.getElementById('edit-comp-uncertTitle').value = c.uncertTitle; document.getElementById('edit-comp-uncertDesc').value = c.uncertDesc || '';
+            document.getElementById('edit-comp-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
+        }
+        function openEditAbout(id) {
+            hideAllEditInputs();
+            const a = abouts.find(x => x.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'abouts';
+            document.getElementById('edit-about-title').value = a.title; document.getElementById('edit-about-content').value = a.content;
+            document.getElementById('edit-about-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
+        }
+        function openEditFaq(id) {
+            hideAllEditInputs();
+            const faq = faqs.find(f => f.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'faqs';
+            document.getElementById('edit-faq-q').value = faq.q; document.getElementById('edit-faq-a').value = faq.a;
+            document.getElementById('edit-faq-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
+        }
+        function openEditResource(id) {
+            hideAllEditInputs();
+            const res = resources.find(r => r.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'resources';
+            document.getElementById('edit-res-type').value = res.type; document.getElementById('edit-res-name').value = res.name;
+            document.getElementById('edit-res-link').value = res.link; document.getElementById('edit-res-copyright').value = res.copyright || '';
+            document.getElementById('edit-res-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
+        }
+        function openEditGoodie(id) {
+            hideAllEditInputs();
+            const g = goodies.find(g => g.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'goodies';
+            document.getElementById('edit-goodie-title').value = g.title; document.getElementById('edit-goodie-content').value = g.content; document.getElementById('edit-goodie-link').value = g.link || '';
+            document.getElementById('edit-goodie-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
+        }
+        function openEditBook(id) {
+            hideAllEditInputs();
+            const b = books.find(b => b.id === id);
+            document.getElementById('edit-id').value = id; document.getElementById('edit-collection').value = 'books';
+            document.getElementById('edit-book-title').value = b.title; document.getElementById('edit-book-img-link').value = b.imageUrl || '';
+            document.getElementById('edit-book-author').value = b.author || ''; document.getElementById('edit-book-illustrator').value = b.illustrator || '';
+            document.getElementById('edit-book-translator').value = b.translator || ''; document.getElementById('edit-book-publisher').value = b.publisher || '';
+            document.getElementById('edit-book-age').value = b.age || ''; document.getElementById('edit-book-category').value = b.category || '';
+            document.getElementById('edit-book-outline').value = b.outline || '';
+            document.getElementById('edit-book-inputs').style.display = 'block'; document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function saveEdit() {
+            const id = document.getElementById('edit-id').value;
+            const collection = document.getElementById('edit-collection').value;
+            let data = {};
+            
+            if (collection === 'contractLinks') {
+                data = { title: document.getElementById('edit-contract-title').value, link: document.getElementById('edit-contract-link').value };
+            } else if (collection === 'comparisons') {
+                data = { indicator: document.getElementById('edit-comp-indicator').value, certTitle: document.getElementById('edit-comp-certTitle').value, certDesc: document.getElementById('edit-comp-certDesc').value, uncertTitle: document.getElementById('edit-comp-uncertTitle').value, uncertDesc: document.getElementById('edit-comp-uncertDesc').value };
+            } else if (collection === 'abouts') {
+                data = { title: document.getElementById('edit-about-title').value, content: document.getElementById('edit-about-content').value };
+            } else if (collection === 'faqs') {
+                data = { q: document.getElementById('edit-faq-q').value, a: document.getElementById('edit-faq-a').value };
+            } else if (collection === 'resources') {
+                data = { type: document.getElementById('edit-res-type').value, name: document.getElementById('edit-res-name').value, link: document.getElementById('edit-res-link').value, copyright: document.getElementById('edit-res-copyright').value };
+            } else if (collection === 'goodies') {
+                data = { title: document.getElementById('edit-goodie-title').value, content: document.getElementById('edit-goodie-content').value, link: document.getElementById('edit-goodie-link').value };
+            } else if (collection === 'books') {
+                data = {
+                    title: document.getElementById('edit-book-title').value, imageUrl: document.getElementById('edit-book-img-link').value,
+                    author: document.getElementById('edit-book-author').value, illustrator: document.getElementById('edit-book-illustrator').value,
+                    translator: document.getElementById('edit-book-translator').value, publisher: document.getElementById('edit-book-publisher').value,
+                    age: document.getElementById('edit-book-age').value, category: document.getElementById('edit-book-category').value,
+                    outline: document.getElementById('edit-book-outline').value
+                };
+            }
+
+            db.collection(collection).doc(id).update(data)
+              .then(() => { closeModal('edit-modal'); alert('修改成功！'); })
+              .catch((e) => alert("更新失敗: " + e));
+        }
+
+        // ================= 前台與後台的渲染引擎 (完整呈現) =================
+        function handleSearch() { const keyword = document.getElementById('global-search').value.toLowerCase(); renderFront(keyword); }
+        function safeStr(str) { return (str || '').toLowerCase(); }
+
+        function renderFront(keyword = '') {
+            const fAbouts = abouts.filter(a => (safeStr(a.title) + safeStr(a.content)).includes(keyword));
+            const fFaqs = faqs.filter(f => (safeStr(f.q) + safeStr(f.a)).includes(keyword));
+            const fRes = resources.filter(r => (safeStr(r.name) + safeStr(r.type) + safeStr(r.copyright)).includes(keyword));
+            const fBooks = books.filter(b => (safeStr(b.title) + safeStr(b.age) + safeStr(b.category) + safeStr(b.outline) + safeStr(b.author) + safeStr(b.publisher)).includes(keyword));
+            const fGoodies = goodies.filter(g => (safeStr(g.title) + safeStr(g.content)).includes(keyword));
+
+            // 合約按鈕
+            const contractContainer = document.getElementById('contract-links-container-front');
+            if (contractLinks.length === 0) { contractContainer.innerHTML = ''; } 
+            else { contractContainer.innerHTML = contractLinks.map(c => `<a href="${c.link}" target="_blank" class="btn btn-danger" style="font-size: 18px; padding: 15px 30px; display: inline-block; margin: 10px;">${c.title}</a>`).join(''); }
+
+            // 比較表
+            const compContainer = document.getElementById('comparison-container-front');
+            if (comparisons.length === 0) { compContainer.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#888;">尚無資料</td></tr>'; } 
+            else {
+                compContainer.innerHTML = comparisons.map(c => `
+                    <tr>
+                        <td>${c.indicator}</td>
+                        <td><strong>${c.certTitle}</strong>${c.certDesc ? `<span style="display:block; font-size:0.9em; margin-top:5px; color:#555;">${c.certDesc}</span>` : ''}</td>
+                        <td><strong>${c.uncertTitle}</strong>${c.uncertDesc ? `<span style="display:block; font-size:0.9em; margin-top:5px; color:#555;">${c.uncertDesc}</span>` : ''}</td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('about-container-front').innerHTML = fAbouts.length ? fAbouts.map(a => `<button class="accordion" style="background-color: #fff; border-color: #ffd3b6;">${a.title}</button><div class="panel" style="border-color: #ffd3b6;"><div class="panel-inner"><p>${a.content}</p></div></div>`).join('') : '<p style="text-align:center; color:#888;">找不到相關特色</p>';
+            document.getElementById('faq-container-front').innerHTML = fFaqs.length ? fFaqs.map(f => `<button class="accordion">${f.q}</button><div class="panel"><div class="panel-inner"><p>${f.a}</p></div></div>`).join('') : '<p style="color:#888;">找不到相關問題</p>';
+            
+            let lessonHTML = '', songHTML = '';
+            fRes.forEach(res => {
+                let copy = res.copyright ? `<div class="resource-copyright">© ${res.copyright}</div>` : '';
+                let card = `<div class="resource-card"><div><div class="resource-title">${res.name}</div>${copy}</div><a href="${res.link}" target="_blank" class="resource-link">點擊查看</a></div>`;
+                if(res.type === 'lesson') lessonHTML += card; else songHTML += card;
+            });
+            document.getElementById('lesson-container-front').innerHTML = lessonHTML || '<p style="color:#888;">無相關教案</p>';
+            document.getElementById('song-container-front').innerHTML = songHTML || '<p style="color:#888;">無相關歌曲</p>';
+
+            const booksContainer = document.getElementById('books-container-front');
+            if(fBooks.length === 0) { booksContainer.innerHTML = '<p style="text-align:center; color:#888;">找不到相關繪本。</p>'; } 
+            else {
+                booksContainer.innerHTML = fBooks.map(book => `
+                    <button class="accordion" style="background-color: #fff; border-color: #ffd3b6; margin-top: 10px;">
+                        📖 ${book.title} ${book.age ? `<span style="font-size:14px; color:#ff8b94; font-weight:normal;">(適用: ${book.age})</span>` : ''}
+                    </button>
+                    <div class="panel" style="border-color: #ffd3b6;">
+                        <div class="panel-inner">
+                            <div class="book-card" style="margin-top: 0; box-shadow: none; border: none; padding: 0; background: transparent;">
+                                ${book.imageUrl ? `<img src="${book.imageUrl}" class="book-img" alt="繪本封面" onerror="this.src='https://via.placeholder.com/150?text=圖片失效'; this.onerror=null;">` : `<div class="book-img" style="display:flex; align-items:center; justify-content:center; background:#eee; color:#aaa;">無圖片</div>`}
+                                <div class="book-info">
+                                    <div class="book-meta">
+                                        <span>👤 作者: ${book.author || '無'}</span>
+                                        <span>🎨 繪者: ${book.illustrator || '無'}</span>
+                                        ${book.translator ? `<span>🌐 譯者: ${book.translator}</span>` : ''}
+                                        <span>🏢 出版: ${book.publisher || '無'}</span>
+                                        <span>👶 年齡: ${book.age || '無'}</span>
+                                        <span>🏷️ 分類: ${book.category || '無'}</span>
+                                    </div>
+                                    <div class="book-outline" style="background:#fffaf0;"><strong>故事大綱：</strong><br>${book.outline || '無'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const goodiesContainer = document.getElementById('goodies-container-front');
+            if(fGoodies.length === 0) { goodiesContainer.innerHTML = '<p style="text-align:center; color:#888;">找不到相關情報。</p>'; } 
+            else {
+                goodiesContainer.innerHTML = fGoodies.map(g => `
+                    <button class="accordion" style="background-color: #fff; border-color: #85d5b7; margin-top: 10px;">📌 ${g.title}</button>
+                    <div class="panel" style="border-color: #85d5b7;">
+                        <div class="panel-inner">
+                            <div class="goodie-content">${g.content}</div>
+                            ${g.link ? `<div style="margin-top: 15px;"><a href="${g.link}" target="_blank" class="goodie-link">🔗 點擊查看活動網頁</a></div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const fbContainer = document.getElementById('feedback-container-front');
+            if(feedbacks.length === 0) {
+                fbContainer.innerHTML = '<p style="text-align:center; color:#888;">目前還沒有留言，來搶頭香吧！</p>';
+            } else {
+                fbContainer.innerHTML = feedbacks.map(fb => `
+                    <div class="feedback-card">
+                        <div class="feedback-header">👤 ${fb.name} <span style="color:#aaa; font-weight:normal; font-size:13px;">(寶貝年齡: ${fb.age})</span></div>
+                        <div class="feedback-text">${fb.content}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // 後台各板塊管理列表渲染
+        function renderAdmin() {
+            document.getElementById('admin-contract-list').innerHTML = contractLinks.map(c => `
+                <div class="admin-list-item">
+                    <div><strong>${c.title}</strong><br><a href="${c.link}" target="_blank" style="font-size:13px;color:#0984e3; word-break: break-all;">${c.link}</a></div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditContract('${c.id}')">編輯</button>
+                        <button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('contractLinks','${c.id}')">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('admin-comp-list').innerHTML = comparisons.map(c => `
+                <div class="admin-list-item">
+                    <div><strong>${c.indicator}</strong><br><span style="font-size:13px;color:#666;">✅ ${c.certTitle} | ❓ ${c.uncertTitle}</span></div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditComparison('${c.id}')">編輯</button>
+                        <button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('comparisons','${c.id}')">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('admin-about-list').innerHTML = abouts.map(a => `
+                <div class="admin-list-item">
+                    <div><strong>${a.title}</strong></div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditAbout('${a.id}')">編輯</button>
+                        <button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('abouts','${a.id}')">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('admin-faq-list').innerHTML = faqs.map(f => `
+                <div class="admin-list-item">
+                    <div><strong>${f.q}</strong></div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditFaq('${f.id}')">編輯</button>
+                        <button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('faqs','${f.id}')">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('admin-res-list').innerHTML = resources.map(r => `
+                <div class="admin-list-item">
+                    <div><span style="color:#aaa; font-size:12px;">[${r.type === 'lesson' ? '教案' : '歌曲'}]</span> <strong>${r.name}</strong></div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditResource('${r.id}')">編輯</button>
+                        <button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('resources','${r.id}')">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('admin-books-list').innerHTML = books.map(b => `
+                <div class="admin-list-item">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        ${b.imageUrl ? `<img src="${b.imageUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:5px;" onerror="this.src='https://via.placeholder.com/40?text=無';">` : ''}
+                        <strong>${b.title}</strong>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditBook('${b.id}')">編輯</button>
+                        <button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('books','${b.id}')">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('admin-goodies-list').innerHTML = goodies.map(g => `
+                <div class="admin-list-item">
+                    <div><strong>${g.title}</strong></div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="openEditGoodie('${g.id}')">編輯</button>
+                        <button class="btn btn-danger" style="margin:0; padding:6px 12px; font-size:14px; box-shadow:none;" onclick="deleteDoc('goodies','${g.id}')">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('admin-feedback-list').innerHTML = feedbacks.length ? feedbacks.map(fb => `
+                <div class="admin-list-item">
+                    <div>
+                        <strong>👤 ${fb.name}</strong> <span style="font-size:12px;color:#888;">(寶貝年齡: ${fb.age})</span><br>
+                        <span style="font-size:14px;color:#555;">${fb.content}</span>
+                    </div>
+                    <button class="btn btn-danger" style="padding:4px 10px; margin:0; box-shadow:none;" onclick="deleteDoc('feedbacks','${fb.id}')">刪除</button>
+                </div>
+            `).join('') : '<p style="color:#888;">尚無留言。</p>';
+        }
+
+        // 初始化手風琴動畫效果
+        document.addEventListener("click", function(e) {
+            if(e.target.classList.contains("accordion")) {
+                e.target.classList.toggle("active");
+                var panel = e.target.nextElementSibling;
+                if (panel.style.maxHeight) { panel.style.maxHeight = null; } 
+                else { panel.style.maxHeight = panel.scrollHeight + 1000 + "px"; } 
+            }
+        });
+    </script>
+</body>
+</html> 
